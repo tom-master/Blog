@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "mongodbservicecore": "1.0.4",
+    "NETStandard.Library": "1.6.1",
+    "NewBlogger.Model": "1.0.0-*",
+    "System.Linq.Queryable": "4.0.1"
+  },
+
+  "frameworks": {
+    "netstandard1.6": {
+      "imports": "dnxcore50"
+    }
+  }
+}

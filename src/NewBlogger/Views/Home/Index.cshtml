@@ -1,0 +1,138 @@
+﻿@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="main" style="min-height: 1200px">
+    <div class="wrap">
+        <div class="col_1_of_4" style="width: 65%">
+            @{
+                if (Context.Request.Query["id"].Any())
+                {
+                    ViewData.Add("id", Context.Request.Query["id"].FirstOrDefault());
+                    <text>
+                    @Html.Partial("~/Views/BlogDetail/Index.cshtml", new ViewDataDictionary(ViewData))
+                    </text>
+                }
+                else
+                {
+                    ViewData.Add("categoryId", Context.Request.Query["categoryId"].FirstOrDefault());
+                    <text>
+                    @Html.Partial("~/Views/Home/Blog.cshtml", new ViewDataDictionary(ViewData))
+                    <div class="pagination pagination-centered" id="pagination"></div>
+                    <input id="pagination_setting" type="hidden" per="15">
+                    </text>
+                }
+            }
+        </div>
+
+        <div style="float: right; width: 30%; margin: 2% 0 1% 0">
+            <div class="float-lt">
+                <div class="well">
+                    <h4>Blog Search</h4>
+                    <div class="input-group">
+                        <input class="form-control" type="text">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div class="well">
+                    <h4>Blog Categories</h4>
+                    <div class="row" id="categories">
+
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- Side Widget Well -->
+                <div class="well">
+                    <h4>任何伟大的事迹都必定有它的起点，但惟有坚持到最后才能获得真正的荣耀</h4>
+                    <br />
+                </div>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
+@section scripts{
+    <script id="categories-template" type="text/x-handlebars-template">
+        <div class="float-lt col-lg-6">
+            <ul class="list-unstyled">
+                {{#each categories}}
+                <li>
+                    <a href="@Url.Action("Index","Home")?categoryId={{id}}">{{name}}&nbsp;({{blogCount}})</a>
+                </li>
+                {{/each}}
+            </ul>
+        </div>
+
+    </script>
+
+    <script id="blogs-template" type="text/x-handlebars-template">
+        {{#each blogs}}
+        <div>
+            <h2 style="background: url(images/h2_bgm.gif) no-repeat left center">
+                <span>
+                    &nbsp;&nbsp;{{title}}
+                </span>
+            </h2>
+            <div class="clr"></div>
+            <p>
+                Posted by <a href="#">Owner</a>
+            </p>
+            <p>
+                {{content}}
+            </p>
+            <p class="spec">
+                <a class="rm" href="@Url.Action("Index", "Home")?id={{id}}">Read more</a> &nbsp;•&nbsp;
+                <a class="com" href="#">Comments ({{commentCount}})</a> &nbsp;•&nbsp;
+                <span class="date">{{addTime}}</span>
+            </p>
+
+        </div>
+        {{/each}}
+    </script>
+
+
+
+    <script>
+        $(function () {
+            getCategories();
+
+            getBlog(0);
+        });
+
+
+        function getCategories() {
+            $.get('@Url.Action("GetCategories", "Home")', function (responseText) {
+                var tableTemplate = Handlebars.compile($("#categories-template").html());
+                $('#categories').html(tableTemplate(responseText));
+
+            });
+        }
+
+        function getBlog(current_page) {
+            $.get('@Url.Action("GetBlogs", "Home")', { pageIndex: current_page === 0 ? 1 : current_page + 1, pageSize: 5, categoryId: '@Context.Request.Query["categoryId"].FirstOrDefault()' }, function (responseText) {
+                var tableTemplate = Handlebars.compile($("#blogs-template").html());
+                $('#blogs').html(tableTemplate(responseText));
+                $('#pagination_setting').attr('count', responseText.totalCount);
+                initPagination(current_page);
+            });
+        }
+
+
+        function initPagination(current_page) {
+            $('#pagination').pagination(parseInt($('#pagination_setting').attr('count')), {
+                current_page: current_page,
+                items_per_page: 5,
+                num_display_entries: 3,
+                num_edge_entries: 1,
+                callback: getBlog,
+                prev_text: '上一页',
+                next_text: '下一页'
+            });
+        }
+    </script>
+}

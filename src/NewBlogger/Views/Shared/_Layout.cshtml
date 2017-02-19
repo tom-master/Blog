@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Free Emmeline Website Template | Home :: w3layouts</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="~/css/style.css" rel="stylesheet" />
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/handlebars-v4.0.5.js"></script>
+    <script src="~/js/pager.js"></script>
+</head>
+<body style="height: 100%; overflow-y: scroll">
+    <div class="wrap">
+        <div class="header-top">
+            <div class="logo">
+                <a href="@Url.Action("Index","Home")"><img src="images/logo.png" alt="" /></a>
+            </div>
+            <div class="h_menu4">
+                <!-- start h_menu4 -->
+                <a class="toggleMenu" href="#">Menu</a>
+                <ul class="nav">
+                    <li class="active"><a href="@Url.Action("Index","Home")">Home</a></li>
+
+                    <li>
+                        <a href="shortcodes.html">About Blog</a>
+                    </li>
+                    <li>
+                        <a href="blog.html">Support</a>
+                    </li>
+                    <li>
+                        <a href="contact.html">Contact Me</a>
+                    </li>
+                </ul>
+            </div><!-- end h_menu4 -->
+            <div class="clear"></div>
+        </div>
+        <div class="slider">
+            <div class="da-slider">
+                <div class="da-slide da-slide-current">
+                    <h1>too simple sometimes naive</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    @RenderBody()
+    <div class="footer-bottom" style="position: fixed; bottom: 0; right: 0;left: 0">
+        <div class="wrap">
+            <div class="copy">
+                <p>© 2017 Template by <a href="javascript:void(0)" target="_blank"> haozifan</a></p>
+            </div>
+            <div class="social">
+                <ul>
+                    <li class="facebook"><a href="#"><span> </span></a></li>
+                    <li class="linkedin"><a href="#"><span> </span></a></li>
+                    <li class="twitter"><a href="#"><span> </span></a></li>
+                </ul>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+    @RenderSection("scripts", required: false)
+</body>
+<script type="text/javascript" src="~/js/nav.js"></script>
+</html>
