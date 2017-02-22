@@ -32,7 +32,6 @@ namespace NewBlogger.Application
             return _blogRepository.Find(b => (categoryId == default(String) || b.CategoryId == categoryId), pageIndex, pageSize, out totalCount).ToList().Select(s => new BlogDto
             {
                 CategoryId = s.CategoryId,
-                CategoryName = _categoryRepository.Find().FirstOrDefault(c => c.Id == s.CategoryId).Name,
                 CommentCount = _commentRepository.Find().Count(c => c.BlogId == s.Id),
                 Content = s.Content,
                 Id = s.Id,
