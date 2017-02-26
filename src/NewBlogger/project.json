@@ -56,7 +56,8 @@
       "wwwroot",
       "**/*.cshtml",
       "appsettings.json",
-      "web.config"
+      "web.config",
+      "Connection.json"
     ]
   },
 
