@@ -21,8 +21,6 @@ namespace NewBlogger.Controllers
 
         public IActionResult Index()
         {
-            var a = _blogService;
-
             return View();
         }
 
