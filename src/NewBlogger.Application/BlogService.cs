@@ -37,7 +37,7 @@ namespace NewBlogger.Application
                 Id = s.Id,
                 Title = s.Title,
                 ViewCount = s.ViewCount,
-                AddTime = s.AddTime
+                AddTime = s.AddTime,
             }).ToList();
         }
 
@@ -49,7 +49,6 @@ namespace NewBlogger.Application
             {
                 CategoryId = internalBlog.CategoryId,
                 CategoryName = _categoryRepository.Find().FirstOrDefault(c => c.Id == internalBlog.CategoryId).Name,
-                CommentCount = _commentRepository.Find().Count(c => c.BlogId == internalBlog.Id),
                 Content = internalBlog.Content,
                 Id = internalBlog.Id,
                 Title = internalBlog.Title,

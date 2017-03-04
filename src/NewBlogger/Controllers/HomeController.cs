@@ -47,7 +47,7 @@ namespace NewBlogger.Controllers
         /// get all blog
         /// </summary>
         /// <returns></returns>
-        public IActionResult GetBlogs(Int32 pageIndex, Int32 pageSize, String categoryId = default(String))
+        public IActionResult GetBlogs(Int32 pageIndex, Int32 pageSize, Guid categoryId = default(Guid))
         {
             Int32 totalCount;
 

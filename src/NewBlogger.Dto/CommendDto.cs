@@ -10,6 +10,10 @@ namespace NewBlogger.Dto
         public CommendDto() { }
 
 
+        public String ReplyNickName { get; set; }
+
+        public String ReplyEmailAddress { get; set; }
+
         public Guid BlogId { get; set; }
 
         public String Content { get; set; }

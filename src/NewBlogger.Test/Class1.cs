@@ -38,7 +38,7 @@ namespace NewBlogger.Test
     ac blandit ante orci ut diam. Cras fringilla magna. Phasellus suscipit, leo a pharetra condimentum, 
     lorem tellus eleifend magna, eget fringilla velit magna id neque. Curabitur vel urna. In tristique orci
     porttitor ipsum. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec libero.
-    Suspendisse bibendum. Cras id urna. Morbi tincidunt, orci ac convallis aliquam.", "f7e371e3-9ad2-4ef9-9c6c-559409b67840");
+    Suspendisse bibendum. Cras id urna. Morbi tincidunt, orci ac convallis aliquam.",Guid.Parse("f7e371e3-9ad2-4ef9-9c6c-559409b67840"));
 
                 IRepository<Blog> blogRepository = new MongodbRepository<Blog>();
 

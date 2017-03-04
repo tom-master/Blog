@@ -41,12 +41,12 @@ namespace NewBlogger.Application
             await _categoryRepository.AddAsync(category);
         }
 
-        public async Task RemoveCategoryAsync(String categoryId)
+        public async Task RemoveCategoryAsync(Guid categoryId)
         {
             await _categoryRepository.RemoveAsync(categoryId);
         }
 
-        public async Task ModifyCategoryAsync(String categoryId, String newCategoryName)
+        public async Task ModifyCategoryAsync(Guid categoryId, String newCategoryName)
         {
             IList<Tuple<Object, Object>> fields = new List<Tuple<Object, Object>>
             {

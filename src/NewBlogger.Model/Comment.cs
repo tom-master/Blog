@@ -8,8 +8,19 @@ namespace NewBlogger.Model
     public class Comment : ModelBase
     {
 
-        public Comment(Guid blogId, String content, Guid replyId = default(Guid))
+        public Comment(String replyNickName, String replyEmailAddress, Guid blogId, String content, Guid replyId = default(Guid))
         {
+
+            if ((replyNickName + "").Length <= 0)
+            {
+                throw new ArgumentNullException($"{nameof(replyNickName)} cannot be null");
+            }
+
+            if ((replyEmailAddress + "").Length <= 0)
+            {
+                throw new ArgumentNullException($"{nameof(replyEmailAddress)} cannot be null");
+            }
+
             if ((blogId + "").Length <= 0)
             {
                 throw new ArgumentNullException($"{nameof(blogId)} cannot be zero");
@@ -19,6 +30,10 @@ namespace NewBlogger.Model
             {
                 throw new ArgumentNullException($"{nameof(content)} cannot be null");
             }
+
+            ReplyEmailAddress = replyEmailAddress;
+
+            ReplyNickName = replyNickName;
 
             BlogId = blogId;
 
@@ -30,6 +45,11 @@ namespace NewBlogger.Model
 
             AddTime = DateTime.Now;
         }
+
+
+        public String ReplyNickName { get; set; }
+
+        public String ReplyEmailAddress { get; set; }
 
         public Guid BlogId { get; private set; }
 
