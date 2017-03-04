@@ -4,14 +4,12 @@
 }
 
 <style>
-    #box{
-  position: relative;
-  line-height: 1.2;
-  height:3.5em;
-  overflow:hidden;
-}
-
-
+    #box {
+        position: relative;
+        line-height: 1.2;
+        height: 3.5em;
+        overflow: hidden;
+    }
 </style>
 
 <div class="main" style="min-height: 1200px">
@@ -20,16 +18,17 @@
             @{
                 if (Context.Request.Query["id"].Any())
                 {
-                    ViewData.Add("id", Context.Request.Query["id"].FirstOrDefault());
-                    <text>
-                    @Html.Partial("~/Views/BlogDetail/Index.cshtml", new ViewDataDictionary(ViewData))
-                    </text>
+                    ViewData.Add("id", Guid.Parse(Context.Request.Query["id"].FirstOrDefault()));
+
+
+                    Html.RenderPartial("~/Views/BlogDetail/Index.cshtml", new ViewDataDictionary(ViewData));
                 }
                 else
                 {
-                    ViewData.Add("categoryId", Context.Request.Query["categoryId"].FirstOrDefault());
                     <text>
-                    @Html.Partial("~/Views/Home/Blog.cshtml", new ViewDataDictionary(ViewData))
+                    <div id="blogs">
+
+                    </div>
                     <div class="pagination pagination-centered" id="pagination"></div>
                     <input id="pagination_setting" type="hidden" per="15">
                     </text>
@@ -124,7 +123,12 @@
         }
 
         function getBlog(current_page) {
-            $.get('@Url.Action("GetBlogs", "Home")', { pageIndex: current_page === 0 ? 1 : current_page + 1, pageSize: 5, categoryId: '@Context.Request.Query["categoryId"].FirstOrDefault()' }, function (responseText) {
+            $.get('@Url.Action("GetBlogs", "Home")',
+                {
+                    pageIndex: current_page === 0 ? 1 : current_page + 1,
+                    pageSize: 5,
+                    categoryId: '@Context.Request.Query["categoryId"].FirstOrDefault()'
+                }, function (responseText) {
                 var tableTemplate = Handlebars.compile($("#blogs-template").html());
                 $('#blogs').html(tableTemplate(responseText));
                 $('#pagination_setting').attr('count', responseText.totalCount);
