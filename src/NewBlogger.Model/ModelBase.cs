@@ -12,7 +12,7 @@ namespace NewBlogger.Model
         {
         }
 
-        public String Id { get; set; }
+        public Guid Id { get; set; }
 
         public DateTime AddTime { get; set; }
 

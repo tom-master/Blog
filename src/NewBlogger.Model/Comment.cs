@@ -8,7 +8,7 @@ namespace NewBlogger.Model
     public class Comment : ModelBase
     {
 
-        public Comment(String blogId, String content, String replyId = default(String))
+        public Comment(Guid blogId, String content, Guid replyId = default(Guid))
         {
             if ((blogId + "").Length <= 0)
             {
@@ -26,16 +26,16 @@ namespace NewBlogger.Model
 
             ReplyId = replyId;
 
-            Id = Guid.NewGuid().ToString();
+            Id = Guid.NewGuid();
 
             AddTime = DateTime.Now;
         }
 
-        public String BlogId { get; private set; }
+        public Guid BlogId { get; private set; }
 
         public String Content { get; private set; }
 
-        public String ReplyId { get; private set; }
+        public Guid ReplyId { get; private set; }
 
     }
 }

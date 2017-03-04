@@ -17,7 +17,7 @@ namespace NewBlogger.Model
 
             Name = name;
 
-            Id = Guid.NewGuid().ToString();
+            Id = Guid.NewGuid();
 
             AddTime=DateTime.Now;
         }

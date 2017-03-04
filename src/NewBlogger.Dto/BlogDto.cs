@@ -11,13 +11,13 @@ namespace NewBlogger.Dto
         {
         }
 
-        public String Id { get; set; }
+        public Guid Id { get; set; }
 
         public String Title { get; set; }
 
         public String Content { get; set; }
 
-        public String CategoryId { get; set; }
+        public Guid CategoryId { get; set; }
 
         public Int32 ViewCount { get; set; }
 

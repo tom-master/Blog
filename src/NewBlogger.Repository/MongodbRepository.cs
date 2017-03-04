@@ -37,7 +37,7 @@ namespace NewBlogger.Repository
             await _mongoServiceApi.UpdateOneAsync(filter, fields);
         }
 
-        public virtual async Task RemoveAsync(String modelId)
+        public virtual async Task RemoveAsync(Guid modelId)
         {
             await _mongoServiceApi.RemoveAsync<T>(m => m.Id == modelId);
         }

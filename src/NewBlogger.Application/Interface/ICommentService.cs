@@ -10,6 +10,6 @@ namespace NewBlogger.Application.Interface
     {
         IList<Comment> GetComments(Expression<Func<Comment, Boolean>> filter, Int32 pageIndex, Int32 pageSize, out Int32 totalCount);
 
-        Task AddCommentAsync(String blogId, String content, String replyId);
+        Task AddCommentAsync(Guid blogId, String content, Guid replyId);
     }
 }

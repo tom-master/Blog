@@ -17,6 +17,6 @@ namespace NewBlogger.Repository
 
         Task ModifyAsync(Expression<Func<T, Boolean>> filter, IEnumerable<Tuple<Object, Object>> fields);
 
-        Task RemoveAsync(String modelId);
+        Task RemoveAsync(Guid modelId);
     }
 }

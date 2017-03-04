@@ -12,8 +12,8 @@ namespace NewBlogger.Application.Interface
 
         Task AddCategoryAsync(String categoryName);
 
-        Task RemoveCategoryAsync(String categoryId);
+        Task RemoveCategoryAsync(Guid categoryId);
 
-        Task ModifyCategoryAsync(String categoryId,String newCategoryName);
+        Task ModifyCategoryAsync(Guid categoryId,String newCategoryName);
     }
 }

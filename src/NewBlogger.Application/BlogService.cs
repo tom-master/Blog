@@ -27,9 +27,9 @@ namespace NewBlogger.Application
             _commentRepository = commentRepository;
         }
 
-        public IList<BlogDto> GetBlogs(String categoryId, Int32 pageIndex, Int32 pageSize, out Int32 totalCount)
+        public IList<BlogDto> GetBlogs(Guid categoryId, Int32 pageIndex, Int32 pageSize, out Int32 totalCount)
         {
-            return _blogRepository.Find(b => (categoryId == default(String) || b.CategoryId == categoryId), pageIndex, pageSize, out totalCount).ToList().Select(s => new BlogDto
+            return _blogRepository.Find(b => (categoryId == default(Guid) || b.CategoryId == categoryId), pageIndex, pageSize, out totalCount).ToList().Select(s => new BlogDto
             {
                 CategoryId = s.CategoryId,
                 CommentCount = _commentRepository.Find().Count(c => c.BlogId == s.Id),
@@ -41,7 +41,7 @@ namespace NewBlogger.Application
             }).ToList();
         }
 
-        public BlogDto GetBlog(String blogId)
+        public BlogDto GetBlog(Guid blogId)
         {
             var internalBlog = _blogRepository.Find().FirstOrDefault(b => b.Id == blogId);
 
@@ -58,7 +58,7 @@ namespace NewBlogger.Application
             };
         }
 
-        public async Task AddViewCountAsync(String blogId)
+        public async Task AddViewCountAsync(Guid blogId)
         {
             var blog = _blogRepository.Find().FirstOrDefault(b => b.Id == blogId);
 
