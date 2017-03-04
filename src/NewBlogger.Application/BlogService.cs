@@ -54,7 +54,14 @@ namespace NewBlogger.Application
                 Id = internalBlog.Id,
                 Title = internalBlog.Title,
                 ViewCount = internalBlog.ViewCount,
-                AddTime = internalBlog.AddTime
+                AddTime = internalBlog.AddTime,
+                Comments = _commentRepository.Find().Where(w => w.BlogId == internalBlog.Id).Select(s => new CommendDto
+                {
+                    BlogId = s.BlogId,
+                    AddTime = s.AddTime,
+                    Content = s.Content,
+                    ReplyId = s.ReplyId
+                }).ToList()
             };
         }
 

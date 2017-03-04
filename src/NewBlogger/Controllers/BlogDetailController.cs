@@ -23,9 +23,9 @@ namespace NewBlogger.Controllers
         // GET: /<controller>/
         public IActionResult Index(Guid id)
         {
-            _blogService.GetBlog(id);
+            var blog = _blogService.GetBlog(id);
 
-            return View();
+            return View(blog);
         }
     }
 }
