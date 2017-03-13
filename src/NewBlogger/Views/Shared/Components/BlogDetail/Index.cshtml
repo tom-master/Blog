@@ -12,8 +12,17 @@
         <div class="clr"></div>
         <p>Posted by <a href="#">Owner</a> <span>&nbsp;•&nbsp;</span> Filed under <a href="#">templates</a>, <a href="#">internet</a></p>
         <p>@Model.Content</p>
-        <p>Tagged: <a href="#">orci</a>, <a href="#">lectus</a>, <a href="#">varius</a>, <a href="#">turpis</a></p>
-        <p><a href="#"><strong>Comments (@Model.Comments.Count)</strong></a> <span>&nbsp;•&nbsp;</span> @Model.AddTime <span>&nbsp;•&nbsp;</span> </p>
+        <p>
+            Tagged:
+            @{
+                foreach (var tag in Model.Tags)
+                {
+                    <a href="javascript:void(0)">@tag.Name</a>
+                }
+            }
+
+        </p>
+        <p><a href="javascript:void(0)"><strong>Comments (@Model.Comments.Count)</strong></a> <span>&nbsp;•&nbsp;</span> @Model.AddTime <span>&nbsp;•&nbsp;</span> </p>
     </div>
     <div class="article">
         <h2 style="background: url(images/h2_bgm.gif) no-repeat left center">

@@ -78,7 +78,6 @@ namespace NewBlogger.Application
             await _blogRepository.ModifyAsync(d => d.Id == blogId, fields);
         }
 
-
         private IList<CommentDto> GetBlogComments(Guid blogId)
         {
             var comments = _commentRepository.Find().Where(w => w.BlogId == blogId);
