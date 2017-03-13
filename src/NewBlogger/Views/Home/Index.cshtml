@@ -87,14 +87,14 @@
                 </span>
             </h2>
             <p>
-                Posted by <a href="#">Owner</a>
+                Posted by <a href="javascript:void(0)">Owner</a>
             </p>
             <div id="box">
                 {{content}}
             </div>
             <p class="spec">
                 <a class="rm" href="@Url.Action("Index", "Home")?id={{id}}">Read more</a> &nbsp;•&nbsp;
-                <a class="com" href="#">Comments ({{commentCount}})</a> &nbsp;•&nbsp;
+                <a class="com" href="@Url.Action("Index", "Home")?id={{id}}">Comments ({{commentCount}})</a> &nbsp;•&nbsp;
                 <span class="date">{{addTime}}</span>
             </p>
 
