@@ -69,7 +69,7 @@ namespace NewBlogger.Controllers
 
             var blogId = Guid.Parse(Request.Form["blogId"]);
 
-            var replyId = Guid.Parse(Request.Form["replyId"]);
+            var replyId =Guid.NewGuid() /*Guid.Parse(Request.Form["replyId"])*/;
 
             var message = Request.Form["message"];
 
