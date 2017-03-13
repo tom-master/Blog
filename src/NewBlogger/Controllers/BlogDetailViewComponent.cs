@@ -27,6 +27,8 @@ namespace NewBlogger.Controllers
 
             return View("Index", blog);
         }
+
+      
     }
 }
 

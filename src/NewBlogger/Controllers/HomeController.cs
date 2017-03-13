@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NewBlogger.Application.Interface;
 
@@ -10,11 +11,15 @@ namespace NewBlogger.Controllers
 
         private readonly ICategoryService _categoryService;
 
-        public HomeController(IBlogService blogService, ICategoryService categoryService)
+        private readonly ICommentService _commentService;
+
+        public HomeController(IBlogService blogService, ICategoryService categoryService, ICommentService commentService)
         {
             _blogService = blogService;
 
             _categoryService = categoryService;
+
+            _commentService = commentService;
         }
 
         #region pages
@@ -53,6 +58,24 @@ namespace NewBlogger.Controllers
                 totalCount,
                 blogs
             });
+        }
+
+        public async Task<IActionResult> Reply()
+        {
+
+            var nickName = Request.Form["name"];
+
+            var email = Request.Form["email"];
+
+            var blogId = Guid.Parse(Request.Form["blogId"]);
+
+            var replyId = Guid.Parse(Request.Form["replyId"]);
+
+            var message = Request.Form["message"];
+
+            await _commentService.AddCommentAsync(nickName, email, blogId, message, replyId);
+
+            return Json(new { });
         }
     }
 }

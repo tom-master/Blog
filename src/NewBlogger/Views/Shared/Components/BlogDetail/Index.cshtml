@@ -54,8 +54,9 @@
             </span>
         </h2>
         <div class="clr"></div>
-        <form action="#" method="post" id="leavereply">
-            <ol>
+        <form action="@Url.Action("Reply", "Home")" method="post" id="leavereply">
+        <input type="hidden" value="@Model.Id"/>    
+        <ol>
                 <li>
                     <label for="name">Name (required)</label>
                     <input id="name" name="name" class="text">
