@@ -29,5 +29,7 @@ namespace NewBlogger.Dto
         public DateTime AddTime { get; set; }
 
         public IList<CommentDto> Comments { get; set; }
+
+        public IList<TagDto> Tags { get; set; }
     }
 }

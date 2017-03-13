@@ -18,13 +18,17 @@ namespace NewBlogger.Application
 
         private readonly IRepository<Comment> _commentRepository;
 
-        public BlogService(IRepository<Blog> blogRepository, IRepository<Category> categoryRepository, IRepository<Comment> commentRepository)
+        private readonly IRepository<Tag> _tagRepository;
+
+        public BlogService(IRepository<Blog> blogRepository, IRepository<Category> categoryRepository, IRepository<Comment> commentRepository, IRepository<Tag> tagRepository)
         {
             _blogRepository = blogRepository;
 
             _categoryRepository = categoryRepository;
 
             _commentRepository = commentRepository;
+
+            _tagRepository = tagRepository;
         }
 
         public IList<BlogDto> GetBlogs(Guid? categoryId, Int32 pageIndex, Int32 pageSize, out Int32 totalCount)
@@ -55,7 +59,8 @@ namespace NewBlogger.Application
                 Title = internalBlog.Title,
                 ViewCount = internalBlog.ViewCount,
                 AddTime = internalBlog.AddTime,
-                Comments = GetBlogComments(internalBlog.Id)
+                Comments = GetBlogComments(internalBlog.Id),
+                Tags = GetBlogTag(internalBlog.Tags)
             };
         }
 
@@ -76,9 +81,9 @@ namespace NewBlogger.Application
 
         private IList<CommentDto> GetBlogComments(Guid blogId)
         {
-            var blogs = _commentRepository.Find().Where(w => w.BlogId == blogId);
+            var comments = _commentRepository.Find().Where(w => w.BlogId == blogId);
 
-            return blogs.Any() ? blogs.Select(
+            return comments.Any() ? comments.Select(
                 s => new CommentDto
                 {
                     BlogId = s.BlogId,
@@ -86,6 +91,24 @@ namespace NewBlogger.Application
                     Content = s.Content,
                     ReplyId = s.ReplyId
                 }).ToList() : new List<CommentDto>();
+        }
+
+        private IList<TagDto> GetBlogTag(params Guid[] tagIds)
+        {
+            if (tagIds == null)
+            {
+                return new List<TagDto>();
+            }
+
+            var tags = _tagRepository.Find().Where(w => tagIds.Contains(w.Id));
+
+            return tags.Any() ? tags.Select(
+                s => new TagDto
+                {
+                    AddTime = s.AddTime,
+                    Id = s.Id,
+                    Name = s.Name
+                }).ToList() : new List<TagDto>();
         }
     }
 }

@@ -47,6 +47,8 @@ namespace NewBlogger
             services.AddTransient<IRepository<Category>, MongodbRepository<Category>>();
 
             services.AddTransient<IRepository<Comment>, MongodbRepository<Comment>>();
+
+            services.AddTransient<IRepository<Tag>, MongodbRepository<Tag>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

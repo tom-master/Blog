@@ -7,9 +7,12 @@ namespace NewBlogger.Model
 {
     public partial class Blog
     {
-        public void AddViewCount()
-        {
-            ViewCount = ViewCount + 1;
-        }
+        public void AddViewCount() => ViewCount = ViewCount + 1;
+
+
+        public void AddTag(Guid tagId) => Tags.ToList().Add(tagId);
+
+
+        public void RemoveTag(Guid tagId) => Tags.ToList().Remove(tagId);
     }
 }
