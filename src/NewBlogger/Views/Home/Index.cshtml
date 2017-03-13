@@ -18,10 +18,8 @@
             @{
                 if (Context.Request.Query["id"].Any())
                 {
-                    ViewData.Add("id", Guid.Parse(Context.Request.Query["id"].FirstOrDefault()));
+                    @await Component.InvokeAsync("BlogDetail", new { id = Guid.Parse(Context.Request.Query["id"].FirstOrDefault()) })
 
-
-                    Html.RenderPartial("~/Views/BlogDetail/Index.cshtml", new ViewDataDictionary(ViewData));
                 }
                 else
                 {

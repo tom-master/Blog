@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace NewBlogger.Dto
 {
-    public class CommendDto
+    public class CommentDto
     {
-        public CommendDto() { }
+        public CommentDto() { }
 
 
         public String ReplyNickName { get; set; }

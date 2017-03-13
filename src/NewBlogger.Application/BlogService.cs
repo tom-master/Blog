@@ -43,6 +43,7 @@ namespace NewBlogger.Application
 
         public BlogDto GetBlog(Guid blogId)
         {
+
             var internalBlog = _blogRepository.Find().FirstOrDefault(b => b.Id == blogId);
 
             return new BlogDto
@@ -54,13 +55,7 @@ namespace NewBlogger.Application
                 Title = internalBlog.Title,
                 ViewCount = internalBlog.ViewCount,
                 AddTime = internalBlog.AddTime,
-                Comments = _commentRepository.Find().Where(w => w.BlogId == internalBlog.Id).Select(s => new CommendDto
-                {
-                    BlogId = s.BlogId,
-                    AddTime = s.AddTime,
-                    Content = s.Content,
-                    ReplyId = s.ReplyId
-                }).ToList()
+                Comments = GetBlogComments(internalBlog.Id)
             };
         }
 
@@ -76,6 +71,21 @@ namespace NewBlogger.Application
             };
 
             await _blogRepository.ModifyAsync(d => d.Id == blogId, fields);
+        }
+
+
+        private IList<CommentDto> GetBlogComments(Guid blogId)
+        {
+            var blogs = _commentRepository.Find().Where(w => w.BlogId == blogId);
+
+            return blogs.Any() ? blogs.Select(
+                s => new CommentDto
+                {
+                    BlogId = s.BlogId,
+                    AddTime = s.AddTime,
+                    Content = s.Content,
+                    ReplyId = s.ReplyId
+                }).ToList() : new List<CommentDto>();
         }
     }
 }

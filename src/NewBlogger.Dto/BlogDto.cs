@@ -28,6 +28,6 @@ namespace NewBlogger.Dto
 
         public DateTime AddTime { get; set; }
 
-        public IList<CommendDto> Comments { get; set; }
+        public IList<CommentDto> Comments { get; set; }
     }
 }

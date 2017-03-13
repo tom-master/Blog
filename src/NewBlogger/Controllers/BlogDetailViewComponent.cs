@@ -2,22 +2,20 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NewBlogger.Application.Interface;
-using NewBlogger.Dto;
 
-namespace NewBlogger.Components
+namespace NewBlogger.Controllers
 {
-    public class BlogDetailComponent : ViewComponent
+    public class BlogDetailViewComponent : ViewComponent
     {
         private readonly IBlogService _blogService;
 
-        public BlogDetailComponent(IBlogService blogService)
+        public BlogDetailViewComponent(IBlogService blogService)
         {
             _blogService = blogService;
         }
 
         public IViewComponentResult Inovke(Guid id)
         {
-
             var blog = _blogService.GetBlog(id);
 
             return View("Index", blog);
@@ -27,7 +25,7 @@ namespace NewBlogger.Components
         {
             var blog = await Task.Run(() => _blogService.GetBlog(id));
 
-            return View(blog);
+            return View("Index", blog);
         }
     }
 }
