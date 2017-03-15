@@ -82,13 +82,14 @@ namespace NewBlogger.Application
         {
             var comments = _commentRepository.Find().Where(w => w.BlogId == blogId);
 
-            return comments.Any() ? comments.Select(
+            return comments.Any() ? comments.ToList().Where(w => w.ReplyId == w.Id || w.BlogId == blogId).Select(
                 s => new CommentDto
                 {
-                    BlogId = s.BlogId,
                     AddTime = s.AddTime,
                     Content = s.Content,
-                    ReplyId = s.ReplyId
+                    ReplyNickName = s.ReplyNickName,
+                    ParentReplyId = s.ReplyId,
+                    Id = s.Id
                 }).ToList() : new List<CommentDto>();
         }
 

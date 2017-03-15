@@ -9,6 +9,7 @@ namespace NewBlogger.Dto
     {
         public CommentDto() { }
 
+        public Guid Id { get; set; }
 
         public String ReplyNickName { get; set; }
 
@@ -18,7 +19,7 @@ namespace NewBlogger.Dto
 
         public String Content { get; set; }
 
-        public Guid ReplyId { get; set; }
+        public Guid? ParentReplyId { get; set; }
 
         public DateTime AddTime { get; set; }
     }
