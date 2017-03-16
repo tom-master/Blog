@@ -24,7 +24,7 @@ namespace NewBlogger.Application
             return _commentRepository.Find(filter, pageIndex, pageSize, out totalCount).ToList();
         }
 
-        public async Task AddCommentAsync(String nickName, String emailAddress, Guid blogId, String content, Guid replyId)
+        public async Task AddCommentAsync(String nickName, String emailAddress, Guid blogId, String content, Guid? replyId = default(Guid?))
         {
             var comment = new Comment(nickName,emailAddress,blogId, content, replyId);
 
