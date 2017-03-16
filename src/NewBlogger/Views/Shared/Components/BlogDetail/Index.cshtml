@@ -69,10 +69,10 @@
         <form action="@Url.Action("Reply", "Home")" method="post" id="leavereply">
             <input type="hidden" id="blogId" name="blogId" value="@Model.Id"/>
             <input type="hidden" id="replyId" name="replyId" value="" />
-        <ol>
+            <ol>
                 <li>
                     <label for="name">Name (required)</label>
-                    <input id="name" name="name" class="text">
+                    <input id="name" name="name"  class="text">
                 </li>
                 <li>
                     <label for="email">Email Address (required)</label>
@@ -90,3 +90,7 @@
         </form>
     </div>
 </div>
+@section scripts
+{
+
+}

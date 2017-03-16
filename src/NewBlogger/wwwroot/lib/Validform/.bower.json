@@ -1,0 +1,16 @@
+{
+  "name": "Validform",
+  "description": "Validform：一行代码搞定整站的表单验证！",
+  "version": "5.3.2",
+  "homepage": "https://github.com/webx32/Validform",
+  "_release": "5.3.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "5.3.2",
+    "commit": "1641cabfd9ab0e2e29bb2f3f2b227a926f73a0bc"
+  },
+  "_source": "https://github.com/webx32/Validform.git",
+  "_target": "5.3.2",
+  "_originalSource": "Validform",
+  "_direct": true
+}

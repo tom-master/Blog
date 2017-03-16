@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="mongodbservicecore" Version="1.0.4" />
-    <PackageReference Include="System.Linq.Queryable" Version="4.0.1" />
+    <PackageReference Include="System.Linq.Queryable" Version="4.3.0" />
   </ItemGroup>
 
 </Project>
