@@ -12,6 +12,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="wwwroot\lib\Validform\.bower.json" />
+    <Content Include="wwwroot\lib\Validform\bower.json" />
+    <Content Include="wwwroot\lib\Validform\README.md" />
+    <Content Include="wwwroot\lib\Validform\Validform.js" />
+    <Content Include="wwwroot\lib\Validform\Validform.min.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="wwwroot\**\*">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
