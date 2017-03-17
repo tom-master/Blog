@@ -6,6 +6,15 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link href="~/css/style.css" rel="stylesheet" />
     <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        #box {
+            position: relative;
+            line-height: 1.2;
+            height: 3.5em;
+            overflow: hidden;
+        }
+    </style>
+
 </head>
 <body style="height: 100%; overflow-y: scroll">
     <div class="wrap">
@@ -40,7 +49,43 @@
             </div>
         </div>
     </div>
-    @RenderBody()
+
+
+    <div class="main" style="min-height: 1200px">
+        <div class="wrap" style="margin-bottom: 80px;">
+            <div class="col_1_of_4" style="width: 65%">
+                @RenderBody()
+            </div>
+            <div style="float: right; width: 30%; margin: 2% 0 1% 0">
+                <div class="float-lt">
+                    <div class="well">
+                        <h4>Blog Search</h4>
+                        <div class="input-group">
+                            <input class="form-control" type="text">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">
+                                    <span class="glyphicon glyphicon-search"></span>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="well">
+                        <h4>Blog Categories</h4>
+                        <div class="row" id="categories">
+
+                        </div>
+                        <!-- /.row -->
+                    </div>
+                    <!-- Side Widget Well -->
+                    <div class="well">
+                        <h4>任何伟大的事迹都必定有它的起点，但惟有坚持到最后才能获得真正的荣耀</h4>
+                        <br />
+                    </div>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
     <div class="footer-bottom" style="position: fixed; bottom: 0; right: 0;left: 0">
         <div class="wrap">
             <div class="copy">
@@ -64,5 +109,7 @@
 <script src="@Url.Content("~/js/handlebars-v4.0.5.js")"></script>
 <script src="@Url.Content("~/js/pager.js")"></script>
 <script src="@Url.Content("~/js/nav.js")"></script>
-    @RenderSection("scripts", required: false) 
+<script src="@Url.Content("~/lib/Validform/Validform.js")"></script>
+
+@RenderSection("scripts", required: false) 
 

@@ -40,19 +40,19 @@
             foreach (var comment in Model.Comments)
             {
                 <text>
-                <div class="well">
-                    <div class="comment">
-                        <span class="comment_actions">
-                            <a href="javascript:void(0);" onclick="$('#replyId').val('@comment.Id')">回复</a>
-                        </span>
-                        <a href="javascript:void(0)"><img src="images/userpic.gif" width="40" height="40" alt="" class="userpic"></a>
-                        <p>
-                            <a href="javascript:void(0);">@comment.ReplyNickName</a> Says:<br>
-                            @comment.AddTime.ToString("yyyy-MM-dd HH:mm:ss")
-                        </p>
-                        <p>@comment.Content</p>
+                    <div class="well">
+                        <div class="comment">
+                            <span class="comment_actions">
+                                <a href="javascript:void(0);" onclick="$('#replyId').val('@comment.Id')">回复</a>
+                            </span>
+                            <a href="javascript:void(0)"><img src="images/userpic.gif" width="40" height="40" alt="" class="userpic"></a>
+                            <p>
+                                <a href="javascript:void(0);">@comment.ReplyNickName</a> Says:<br>
+                                @comment.AddTime.ToString("yyyy-MM-dd HH:mm:ss")
+                            </p>
+                            <p>@comment.Content</p>
+                        </div>
                     </div>
-                </div>
                 </text>
             }
         }
@@ -88,4 +88,11 @@
         </form>
     </div>
 </div>
+@section scripts{
+    <script>
+        $(function() {
+            alert('');
+        })
+    </script>
+}
  

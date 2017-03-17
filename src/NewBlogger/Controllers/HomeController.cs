@@ -28,6 +28,12 @@ namespace NewBlogger.Controllers
         {
             return View();
         }
+
+        public IActionResult BlogDetail(Guid blogId)
+        {
+            return View(_blogService.GetBlog(blogId));
+        }
+
         #endregion
 
         /// <summary>
