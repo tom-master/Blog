@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Mvc.ViewFeatures
+﻿
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -18,7 +18,7 @@
             @{
                 if (Context.Request.Query["id"].Any())
                 {
-                    @await Component.InvokeAsync("BlogDetail", new { id = Guid.Parse(Context.Request.Query["id"].FirstOrDefault()) })
+                    @await Component.InvokeAsync("BlogDetail", new { id = Guid.Parse(Context.Request.Query["id"].FirstOrDefault())})
 
                 }
                 else
@@ -102,15 +102,12 @@
         {{/each}}
     </script>
 
-
-
     <script>
         $(function () {
             getCategories();
 
             getBlog(0);
         });
-
 
         function getCategories() {
             $.get('@Url.Action("GetCategories", "Home")', function (responseText) {
@@ -122,11 +119,11 @@
 
         function getBlog(current_page) {
             $.get('@Url.Action("GetBlogs", "Home")',
-                {
-                    pageIndex: current_page === 0 ? 1 : current_page + 1,
-                    pageSize: 5,
-                    categoryId: '@Context.Request.Query["categoryId"].FirstOrDefault()'
-                }, function (responseText) {
+            {
+                pageIndex: current_page === 0 ? 1 : current_page + 1,
+                pageSize: 5,
+                categoryId: '@Context.Request.Query["categoryId"].FirstOrDefault()'
+            }, function (responseText) {
                 var tableTemplate = Handlebars.compile($("#blogs-template").html());
                 $('#blogs').html(tableTemplate(responseText));
                 $('#pagination_setting').attr('count', responseText.totalCount);
@@ -147,4 +144,6 @@
             });
         }
     </script>
+    
+ 
 }
