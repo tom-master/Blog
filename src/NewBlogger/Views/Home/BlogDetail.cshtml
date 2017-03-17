@@ -9,7 +9,7 @@
 
 <div class="mainbar">
     <div class="article">
-        <h2 style="background: url(images/h2_bgm.gif) no-repeat left center">
+        <h2 style="background: url(/images/h2_bgm.gif) no-repeat left center">
             <span>
                 &nbsp;&nbsp; @Model.Title
             </span>
@@ -30,7 +30,7 @@
         <p><a href="javascript:void(0)"><strong>Comments (@Model.Comments.Count)</strong></a> <span>&nbsp;•&nbsp;</span> @Model.AddTime <span>&nbsp;•&nbsp;</span> </p>
     </div>
     <div class="article">
-        <h2 style="background: url(images/h2_bgm.gif) no-repeat left center">
+        <h2 style="background: url(/images/h2_bgm.gif) no-repeat left center">
             <span>
                 &nbsp;&nbsp;  <font size="5"><font color="#00b3ea">@(Model.Comments.Count)</font> Responses</font>
             </span>
@@ -45,7 +45,7 @@
                             <span class="comment_actions">
                                 <a href="javascript:void(0);" onclick="$('#replyId').val('@comment.Id')">回复</a>
                             </span>
-                            <a href="javascript:void(0)"><img src="images/userpic.gif" width="40" height="40" alt="" class="userpic"></a>
+                            <a href="javascript:void(0)"><img src="~/images/userpic.gif" width="40" height="40" alt="" class="userpic"></a>
                             <p>
                                 <a href="javascript:void(0);">@comment.ReplyNickName</a> Says:<br>
                                 @comment.AddTime.ToString("yyyy-MM-dd HH:mm:ss")
@@ -58,7 +58,7 @@
         }
     </div>
     <div>
-        <h2 style="background: url(images/h2_bgm.gif) no-repeat left center">
+        <h2 style="background: url(/images/h2_bgm.gif) no-repeat left center">
             <span>
                 &nbsp;&nbsp;  <font size="5"><font color="#00b3ea">Leave a</font> Reply</font>
             </span>
@@ -81,7 +81,7 @@
                     <textarea id="message" name="message" rows="8" cols="50" onblur="" isvalidate="false" errormessage="回复不能为空"></textarea>
                 </li>
                 <li>
-                    <input type="image" name="imageField" id="imageField" src="images/submit.gif" class="send">
+                    <input type="image" name="imageField" id="imageField" src="~/images/submit.gif" class="send">
                     <div class="clr"></div>
                 </li>
             </ol>
@@ -91,7 +91,7 @@
 @section scripts{
     <script>
         $(function() {
-            alert('');
+           
         })
     </script>
 }
