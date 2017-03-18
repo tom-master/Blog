@@ -81,7 +81,7 @@ namespace NewBlogger.Controllers
 
             await _commentService.AddCommentAsync(nickName, email, blogId, message, replyId);
 
-            return Json(new { });
+            return Json(new { status = 1 });
         }
     }
 }
