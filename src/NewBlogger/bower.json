@@ -2,7 +2,8 @@
   "name": "asp.net",
   "private": true,
   "dependencies": {
-    "Validform": "5.3.2"
+    "Validform": "5.3.2",
+    "wangEditor": "v2.1.23"
   },
   "resolutions": {
     "jquery-validation": ">=1.16"

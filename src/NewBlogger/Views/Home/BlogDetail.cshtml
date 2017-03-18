@@ -6,7 +6,7 @@
         padding: 0 0 8px 0;
     }
 </style>
-
+<link href="@Url.Content("~/lib/wangEditor/src/css/wangEditor.css")" rel="stylesheet" />
 <div class="mainbar">
     <div class="article">
         <h2 style="background: url(/images/h2_bgm.gif) no-repeat left center">
@@ -94,8 +94,18 @@
 @section scripts{
 
     <script src="@Url.Content("~/lib/Validform/Validform.js")"></script>
+
+    <script src="@Url.Content("~/lib/wangEditor/src/js/wangEditor.js")"></script>
+
     <script>
         $(function () {
+
+            InitValidForm();
+
+
+        });
+
+        function InitValidForm() {
             $("#leavereply").Validform({ //指明是哪一表单需要验证,名称需加在form表单上;
                 tiptype: 4,
                 label: ".label",
@@ -129,13 +139,18 @@
                 },
                 ajaxPost: true,
                 callback: function (data) {
-                    
+
                     if (parseInt(data.status) === 1) {
                         location.reload(true);
                     }
                 }
             });
-        })
+        }
+
+        function InitEditor() {
+            var editor = new wangEditor('message');
+            editor.create();
+        }
     </script>
 }
 
