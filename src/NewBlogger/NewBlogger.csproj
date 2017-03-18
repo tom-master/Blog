@@ -12,6 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="wwwroot\images\error.png" />
+    <Content Include="wwwroot\images\right.png" />
     <Content Include="wwwroot\lib\Validform\.bower.json" />
     <Content Include="wwwroot\lib\Validform\bower.json" />
     <Content Include="wwwroot\lib\Validform\README.md" />

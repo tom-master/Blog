@@ -40,19 +40,19 @@
             foreach (var comment in Model.Comments)
             {
                 <text>
-                    <div class="well">
-                        <div class="comment">
-                            <span class="comment_actions">
-                                <a href="javascript:void(0);" onclick="$('#replyId').val('@comment.Id')">回复</a>
-                            </span>
-                            <a href="javascript:void(0)"><img src="~/images/userpic.gif" width="40" height="40" alt="" class="userpic"></a>
-                            <p>
-                                <a href="javascript:void(0);">@comment.ReplyNickName</a> Says:<br>
-                                @comment.AddTime.ToString("yyyy-MM-dd HH:mm:ss")
-                            </p>
-                            <p>@comment.Content</p>
-                        </div>
+                <div class="well">
+                    <div class="comment">
+                        <span class="comment_actions">
+                            <a href="javascript:void(0);" onclick="$('#replyId').val('@comment.Id')">回复</a>
+                        </span>
+                        <a href="javascript:void(0)"><img src="~/images/userpic.gif" width="40" height="40" alt="" class="userpic"></a>
+                        <p>
+                            <a href="javascript:void(0);">@comment.ReplyNickName</a> Says:<br>
+                            @comment.AddTime.ToString("yyyy-MM-dd HH:mm:ss")
+                        </p>
+                        <p>@comment.Content</p>
                     </div>
+                </div>
                 </text>
             }
         }
@@ -70,17 +70,17 @@
             <ol>
                 <li>
                     <label for="name">Name (required)</label>
-                    <input id="name" name="name" class="text"  nullmsg="昵称不能为空">
+                    <input type="text" datatype="name" id="name" name="name" class="text" nullmsg="昵称不能为空">
                     <span class="Validform_checktip"></span>
                 </li>
                 <li>
                     <label for="email">Email Address (required)</label>
-                    <input id="email" name="email" class="text"   nullmsg="邮箱不能为空">
+                    <input type="text" datatype="email" id="email" name="email" class="text" nullmsg="邮箱不能为空">
                     <span class="Validform_checktip"></span>
                 </li>
                 <li>
                     <label for="message">Your Message (required)</label>
-                    <textarea id="message" name="message" rows="8" cols="50" nullmsg="回复不能为空"></textarea>
+                    <textarea datatype="message" id="message" name="message" rows="8" cols="50" nullmsg="回复不能为空"></textarea>
                     <span class="Validform_checktip"></span>
                 </li>
                 <li>
@@ -95,37 +95,41 @@
 
     <script src="@Url.Content("~/lib/Validform/Validform.js")"></script>
     <script>
-        $(function() {
-            var demo = $("#leavereply").Validform({//指明是哪一表单需要验证,名称需加在form表单上;
+        $(function () {
+            $("#leavereply").Validform({ //指明是哪一表单需要验证,名称需加在form表单上;
                 tiptype: 3,
                 label: ".label",
                 showAllError: true,
                 datatype: {
-                    "zh1-6": /^[\u4E00-\u9FA5\uf900-\ufa2d]{1,6}$/,
-                    "Aa1": /^[A-Za-z0-9]+$/
+                    'name': function (value) {
+                        if (value.length <= 0) {
+                            return false;
+                        }
+                        return true;
+                    },
+                    'email': function (value) {
+                        if (value.length <= 0) {
+                            return false;
+                        }
+
+                        var szReg = /^[A-Za-zd]+([-_.][A-Za-zd]+)*@@([A-Za-zd]+[-.])+[A-Za-zd]{2,5}$/;
+
+                        if (szReg.test(value)) {
+                            return true;
+                        }
+
+                        return false;
+                    },
+                    'message': function (value) {
+                        if (value.length <= 0) {
+                            return false;
+                        }
+                        return true;
+                    }
                 },
                 ajaxPost: true
             });
-
-            //通过$.Tipmsg扩展默认提示信息;
-            //$.Tipmsg.w["zh1-6"]="请输入1到6个中文字符！";
-            demo.tipmsg.w["zh1-6"] = "请输入1到6个中文字符！";//可以自定义一些消息提示,zh1-6是自定义的datatype
-
-            demo.addRule([{
-                ele: "#name",
-                datatype: "zh1-6"
-                // ajaxurl:"ajax_post.php?/checkname/name=$_GET['name']"//可以写方法检测中文名是否已经存在
-            },
-            {
-                ele: "#email",
-                datatype: "*6-20"
-            },
-            {
-                ele: "#message",
-                datatype: "*6-20"
-            }
-            ]);
         })
     </script>
 }
- 
+
