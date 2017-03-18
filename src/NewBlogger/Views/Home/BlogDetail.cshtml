@@ -6,7 +6,7 @@
         padding: 0 0 8px 0;
     }
 </style>
-<link href="@Url.Content("~/lib/wangEditor/src/css/wangEditor.css")" rel="stylesheet" />
+<link href="@Url.Content("~/lib/wangEditor/dist/css/wangEditor.css")" rel="stylesheet" />
 <div class="mainbar">
     <div class="article">
         <h2 style="background: url(/images/h2_bgm.gif) no-repeat left center">
@@ -50,7 +50,7 @@
                             <a href="javascript:void(0);">@comment.ReplyNickName</a> Says:<br>
                             @comment.AddTime.ToString("yyyy-MM-dd HH:mm:ss")
                         </p>
-                        <p>@comment.Content</p>
+                      @Html.Raw(comment.Content)
                     </div>
                 </div>
                 </text>
@@ -80,7 +80,7 @@
                 </li>
                 <li>
                     <label for="message">Your Message (required)</label>
-                    <textarea datatype="message" id="message" name="message" rows="8" cols="50" nullmsg="回复不能为空"></textarea>
+                    <textarea datatype="message" id="message" name="message" rows="15" cols="50" style="max-height:500px;" nullmsg="回复不能为空"></textarea>
                     <span class="Validform_checktip"></span>
                 </li>
                 <li>
@@ -95,14 +95,14 @@
 
     <script src="@Url.Content("~/lib/Validform/Validform.js")"></script>
 
-    <script src="@Url.Content("~/lib/wangEditor/src/js/wangEditor.js")"></script>
+    <script src="@Url.Content("~/lib/wangEditor/dist/js/wangEditor.js")"></script>
 
     <script>
         $(function () {
 
             InitValidForm();
 
-
+            InitEditor();
         });
 
         function InitValidForm() {
@@ -149,6 +149,31 @@
 
         function InitEditor() {
             var editor = new wangEditor('message');
+
+            // 普通的自定义菜单
+            editor.config.menus = [
+                'source',
+                '|',
+                'bold',
+                'underline',
+                'italic', 
+                'eraser',
+                'forecolor', 
+                '|', 
+                'fontfamily',
+                'fontsize', 
+                '|', 
+                'emotion',
+                '|',
+                'img', 
+                'insertcode',
+                '|',
+                'undo',
+                'redo' 
+            ];
+
+            editor.config.uploadImgUrl = '';
+
             editor.create();
         }
     </script>
