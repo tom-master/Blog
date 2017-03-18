@@ -1,5 +1,9 @@
 ﻿using System;
+using System.IO;
+using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NewBlogger.Application.Interface;
 
@@ -13,22 +17,28 @@ namespace NewBlogger.Controllers
 
         private readonly ICommentService _commentService;
 
-        public HomeController(IBlogService blogService, ICategoryService categoryService, ICommentService commentService)
+        private readonly IHostingEnvironment _hostingEnvironment;
+
+        public HomeController(IBlogService blogService, ICategoryService categoryService, ICommentService commentService, IHostingEnvironment hostingEnvironment)
         {
             _blogService = blogService;
 
             _categoryService = categoryService;
 
             _commentService = commentService;
+
+            _hostingEnvironment = hostingEnvironment;
         }
 
         #region pages
 
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
 
+        [HttpGet]
         public IActionResult BlogDetail(Guid blogId)
         {
             return View(_blogService.GetBlog(blogId));
@@ -37,9 +47,10 @@ namespace NewBlogger.Controllers
         #endregion
 
         /// <summary>
-        /// get all Categories
+        /// 获取所有分类
         /// </summary>
         /// <returns></returns>
+        [HttpGet]
         public IActionResult GetCategories()
         {
             return Json(new
@@ -50,9 +61,10 @@ namespace NewBlogger.Controllers
 
 
         /// <summary>
-        /// get all blog
+        /// 获取所有文章
         /// </summary>
         /// <returns></returns>
+        [HttpGet]
         public IActionResult GetBlogs(Int32 pageIndex, Int32 pageSize, Guid? categoryId = default(Guid?))
         {
             Int32 totalCount;
@@ -66,6 +78,11 @@ namespace NewBlogger.Controllers
             });
         }
 
+        /// <summary>
+        /// 回复当前博客
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
         public async Task<IActionResult> Reply()
         {
 
@@ -82,6 +99,31 @@ namespace NewBlogger.Controllers
             await _commentService.AddCommentAsync(nickName, email, blogId, message, replyId);
 
             return Json(new { status = 1 });
+        }
+
+        [HttpPost]
+        public IActionResult UploadImage()
+        {
+
+            var file = Request.Form.Files[0];
+
+            var filePath = $@"{_hostingEnvironment.WebRootPath}\UploadImage\";
+
+            if (!Directory.Exists(filePath))
+            {
+                Directory.CreateDirectory(filePath);
+            }
+
+            var fullPath = $@"{filePath}{file.FileName}";
+
+            using (var fileStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write))
+            {
+                file.CopyTo(fileStream);
+
+                fileStream.Flush();
+            }
+
+            return Content(fullPath.Replace(_hostingEnvironment.WebRootPath, $"http://{Request.Host.Value}").Replace("\\", "/"));
         }
     }
 }

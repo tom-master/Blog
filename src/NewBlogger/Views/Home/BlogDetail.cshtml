@@ -172,7 +172,9 @@
                 'redo' 
             ];
 
-            editor.config.uploadImgUrl = '';
+            editor.config.uploadImgUrl = '@Url.Action("UploadImage","Home")';
+
+            editor.config.hideLinkImg = true;
 
             editor.create();
         }

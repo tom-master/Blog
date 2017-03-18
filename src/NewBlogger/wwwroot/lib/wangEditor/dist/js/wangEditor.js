@@ -42,6 +42,7 @@
         }
     };
 // 定义构造函数
+// 定义构造函数
 (function (window, $) {
     if (window.wangEditor) {
         // 重复引用
@@ -6542,6 +6543,7 @@ _e(function (E, $) {
 
         // -------- 定义load函数 --------
         fns.onload || (fns.onload = function (resultText, xhr) {
+            debugger
             E.log('上传结束，返回结果为 ' + resultText);
 
             var editor = this;
@@ -6654,6 +6656,7 @@ _e(function (E, $) {
 
         // -------- xhr 上传图片 --------
         editor.xhrUploadImg = function (opt) {
+            
             // opt 数据
             var event = opt.event;
             var fileName = opt.filename || '';
