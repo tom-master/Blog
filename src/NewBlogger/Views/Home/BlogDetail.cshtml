@@ -122,7 +122,7 @@
                             return false;
                         }
 
-                        var szReg = /^[A-Za-zd]+([-_.][A-Za-zd]+)*@@([A-Za-zd]+[-.])+[A-Za-zd]{2,5}$/;
+                        var szReg = /^([a-zA-Z0-9_\.\-])+\@@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
 
                         if (szReg.test(value)) {
                             return true;
@@ -156,20 +156,20 @@
                 '|',
                 'bold',
                 'underline',
-                'italic', 
+                'italic',
                 'eraser',
-                'forecolor', 
-                '|', 
+                'forecolor',
+                '|',
                 'fontfamily',
-                'fontsize', 
-                '|', 
+                'fontsize',
+                '|',
                 'emotion',
                 '|',
-                'img', 
+                'img',
                 'insertcode',
                 '|',
                 'undo',
-                'redo' 
+                'redo'
             ];
 
             editor.config.uploadImgUrl = '@Url.Action("UploadImage","Home")';
