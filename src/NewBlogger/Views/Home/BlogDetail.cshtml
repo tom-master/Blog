@@ -43,7 +43,7 @@
                 <div class="well">
                     <div class="comment">
                         <span class="comment_actions">
-                            <a href="javascript:void(0);" onclick="$('#replyId').val('@comment.Id')">回复</a>
+                            <a href="javascript:void(0);" onclick="setCommentId('@comment.Id','@comment.ReplyNickName')">回复</a>
                         </span>
                         <a href="javascript:void(0)"><img src="~/images/userpic.gif" width="40" height="40" alt="" class="userpic"></a>
                         <p>
@@ -177,6 +177,18 @@
             editor.config.hideLinkImg = true;
 
             editor.create();
+
+            window.editor = editor;
+        }
+
+
+        function setCommentId(id, nickName) {
+
+            $('#replyId').val(id);
+
+            window.editor.$txt.html('');
+
+            window.editor.$txt.append('<p>回复：<a href="javascript:void(0)">' + nickName + '</a></p>');
         }
     </script>
 }
