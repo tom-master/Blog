@@ -7,20 +7,21 @@ using NewBlogger.Application.Interface;
 using NewBlogger.Dto;
 using NewBlogger.Model;
 using NewBlogger.Repository;
+using NewBlogger.Repository.Base;
 
 namespace NewBlogger.Application
 {
     public class BlogService : IBlogService
     {
-        private readonly IRepository<Blog> _blogRepository;
+        private readonly RepositoryBase<Blog> _blogRepository;
 
-        private readonly IRepository<Category> _categoryRepository;
+        private readonly RepositoryBase<Category> _categoryRepository;
 
-        private readonly IRepository<Comment> _commentRepository;
+        private readonly RepositoryBase<Comment> _commentRepository;
 
-        private readonly IRepository<Tag> _tagRepository;
+        private readonly RepositoryBase<Tag> _tagRepository;
 
-        public BlogService(IRepository<Blog> blogRepository, IRepository<Category> categoryRepository, IRepository<Comment> commentRepository, IRepository<Tag> tagRepository)
+        public BlogService(RepositoryBase<Blog> blogRepository, RepositoryBase<Category> categoryRepository, RepositoryBase<Comment> commentRepository, RepositoryBase<Tag> tagRepository)
         {
             _blogRepository = blogRepository;
 

@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 using NewBlogger.Application.Interface;
 using NewBlogger.Model;
 using NewBlogger.Repository;
+using NewBlogger.Repository.Base;
 
 namespace NewBlogger.Application
 {
     public class CommentService : ICommentService
     {
-        private readonly IRepository<Comment> _commentRepository;
+        private readonly RepositoryBase<Comment> _commentRepository;
 
-        public CommentService(IRepository<Comment> commentRepository)
+        public CommentService(RepositoryBase<Comment> commentRepository)
         {
             _commentRepository = commentRepository;
         }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using NewBlogger.Model;
 using NewBlogger.Repository;
+using NewBlogger.Repository.Base;
 using Xunit;
 
 namespace NewBlogger.Test
@@ -24,7 +25,7 @@ namespace NewBlogger.Test
 
             var a = Directory.GetCurrentDirectory();
 
-            IRepository<Category> categoryRepository = new MongodbRepository<Category>();
+            RepositoryBase<Category> categoryRepository = new MongodbRepository<Category>();
 
             await categoryRepository.AddAsync(category1);
         }
@@ -40,7 +41,7 @@ namespace NewBlogger.Test
     porttitor ipsum. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec libero.
     Suspendisse bibendum. Cras id urna. Morbi tincidunt, orci ac convallis aliquam.",Guid.Parse("f7e371e3-9ad2-4ef9-9c6c-559409b67840"));
 
-                IRepository<Blog> blogRepository = new MongodbRepository<Blog>();
+                RepositoryBase<Blog> blogRepository = new MongodbRepository<Blog>();
 
                 await blogRepository.AddAsync(blog);
             }

@@ -11,6 +11,7 @@ using NewBlogger.Application;
 using NewBlogger.Application.Interface;
 using NewBlogger.Model;
 using NewBlogger.Repository;
+using NewBlogger.Repository.Base;
 
 namespace NewBlogger
 {
@@ -42,13 +43,13 @@ namespace NewBlogger
 
             services.AddTransient<ICommentService, CommentService>();
 
-            services.AddTransient<IRepository<Blog>, MongodbRepository<Blog>>();
+            services.AddTransient<RepositoryBase<Blog>, MongodbRepository<Blog>>();
 
-            services.AddTransient<IRepository<Category>, MongodbRepository<Category>>();
+            services.AddTransient<RepositoryBase<Category>, MongodbRepository<Category>>();
 
-            services.AddTransient<IRepository<Comment>, MongodbRepository<Comment>>();
+            services.AddTransient<RepositoryBase<Comment>, MongodbRepository<Comment>>();
 
-            services.AddTransient<IRepository<Tag>, MongodbRepository<Tag>>();
+            services.AddTransient<RepositoryBase<Tag>, MongodbRepository<Tag>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

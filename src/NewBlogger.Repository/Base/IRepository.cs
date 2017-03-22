@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using NewBlogger.Model;
 
-namespace NewBlogger.Repository
+namespace NewBlogger.Repository.Base
 {
-    public interface IRepository<T> where T : ModelBase
+    internal interface IRepository<T> where T : ModelBase
     {
-        IQueryable<T> Find(Expression<Func<T, Boolean>> filter, Int32 pageIndex, Int32 pageSize, out Int32 totalCount);
+        IList<T> Find(Expression<Func<T, Boolean>> filter, Int32 pageIndex, Int32 pageSize, out Int32 totalCount);
 
-        IQueryable<T> Find();
+        IList<T> Find(Expression<Func<T,Boolean>> filter=default(Expression<Func<T,Boolean>>));
 
         Task AddAsync(T model);
 

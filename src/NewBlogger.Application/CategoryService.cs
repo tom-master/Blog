@@ -7,17 +7,18 @@ using NewBlogger.Application.Interface;
 using NewBlogger.Dto;
 using NewBlogger.Model;
 using NewBlogger.Repository;
+using NewBlogger.Repository.Base;
 
 namespace NewBlogger.Application
 {
     public class CategoryService : ICategoryService
     {
-        private readonly IRepository<Category> _categoryRepository;
+        private readonly RepositoryBase<Category> _categoryRepository;
 
-        private readonly IRepository<Blog> _blogRepository;
+        private readonly RepositoryBase<Blog> _blogRepository;
 
 
-        public CategoryService(IRepository<Category> categoryRepository, IRepository<Blog> blogRepository)
+        public CategoryService(RepositoryBase<Category> categoryRepository, RepositoryBase<Blog> blogRepository)
         {
             _categoryRepository = categoryRepository;
 
