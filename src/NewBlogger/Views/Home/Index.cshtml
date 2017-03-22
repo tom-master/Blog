@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "Home Page";
 }
-
+ 
 <div id="blogs">
 
 </div>
@@ -30,9 +30,11 @@
         {{#each blogs}}
         <div style="width:100%;height:150px">
             <h2 style="background: url(images/h2_bgm.gif) no-repeat left center">
-                <span>
-                    &nbsp;&nbsp;{{title}}
-                </span>
+                <a href="@Url.Action("BlogDetail", "Home")?blogId={{id}}">
+                    <span>
+                        &nbsp;&nbsp;{{title}}
+                    </span>
+                </a>
             </h2>
             <p>
                 Posted by <a href="javascript:void(0)">Owner</a>
