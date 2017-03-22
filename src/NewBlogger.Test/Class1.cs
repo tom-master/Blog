@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using NewBlogger.Model;
 using NewBlogger.Repository;
 using NewBlogger.Repository.Base;
+using NewBlogger.Repository.MongodbImpl;
 using Xunit;
 
 namespace NewBlogger.Test

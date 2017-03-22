@@ -1,5 +1,6 @@
 ﻿{
   "ConnectionStrings": {
-    "MongodbConnection": "UserName=xiaofan;Password=woaiguangyun;DataBase=Blog;ServerList=127.0.0.1:2539"
+    "MongodbConnection": "UserName=xiaofan;Password=woaiguangyun;DataBase=Blog;ServerList=127.0.0.1:2539",
+    "RedisConnection": "" 
   }
 }

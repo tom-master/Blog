@@ -16,13 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="mongodbservicecore" Version="1.0.4" />
+    <PackageReference Include="mongodbservicecore" Version="1.0.5" />
     <PackageReference Include="StackExchange.Redis" Version="1.2.1" />
     <PackageReference Include="System.Linq.Queryable" Version="4.3.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="RedisImpl\" />
   </ItemGroup>
 
 </Project>

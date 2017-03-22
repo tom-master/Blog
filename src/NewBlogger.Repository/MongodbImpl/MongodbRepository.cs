@@ -7,7 +7,7 @@ using MongodbServiceCore;
 using NewBlogger.Model;
 using NewBlogger.Repository.Base;
 
-namespace NewBlogger.Repository
+namespace NewBlogger.Repository.MongodbImpl
 {
     public class MongodbRepository<T> : RepositoryBase<T> where T : ModelBase
     {

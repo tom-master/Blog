@@ -12,6 +12,7 @@ using NewBlogger.Application.Interface;
 using NewBlogger.Model;
 using NewBlogger.Repository;
 using NewBlogger.Repository.Base;
+using NewBlogger.Repository.MongodbImpl;
 
 namespace NewBlogger
 {
