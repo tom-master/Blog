@@ -471,6 +471,9 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// <returns></returns>
         public async Task<List<T>> HashKeysAsync<T>(String key)
         {
+            
+
+
             key = AddSysCustomKey(key);
             RedisValue[] values = await Do(db => db.HashKeysAsync(key));
             return ConvetList<T>(values);
