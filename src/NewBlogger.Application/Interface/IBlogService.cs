@@ -11,7 +11,7 @@ namespace NewBlogger.Application.Interface
 
         BlogDto GetBlog(Guid blogId);
 
-        Task AddViewCountAsync(Guid blogId);
+        void AddViewCount(Guid blogId);
 
         void AddNewBlog(String title, String content, Guid categoryId, params Guid[] tagIds);
 

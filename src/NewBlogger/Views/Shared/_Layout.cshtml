@@ -13,6 +13,7 @@
             height: 3.5em;
             overflow: hidden;
         }
+
         a {
             text-decoration: none !important;
         }
@@ -110,6 +111,28 @@
 </html>
 <script src="@Url.Content("~/js/jquery.min.js")"></script>
 <script src="@Url.Content("~/js/nav.js")"></script>
+<script src="@Url.Content("~/js/handlebars-v4.0.5.js")"></script>
 
-@RenderSection("scripts", required: false) 
+<script id="categories-template" type="text/x-handlebars-template">
+    <div class="float-lt col-lg-6">
+        <ul class="list-unstyled">
+            {{#each categories}}
+            <li>
+                <a href="@Url.Action("Index","Home")?categoryId={{id}}">{{name}}&nbsp;({{blogCount}})</a>
+            </li>
+            {{/each}}
+        </ul>
+    </div>
+
+</script>
+<script>
+$(function() {
+                    $.get('@Url.Action("GetCategories", "Home")', function (responseText) {
+                        var tableTemplate = Handlebars.compile($("#categories-template").html());
+                        $('#categories').html(tableTemplate(responseText));
+                     });
+})
+</script>
+
+@RenderSection("scripts", required: false)
 

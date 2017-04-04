@@ -45,16 +45,16 @@ namespace NewBlogger.Application
 
         public BlogDto GetBlog(Guid blogId)
         {
-            var blogRedisKey = $"NewBlogger:Blogs:Id:{blogId}";
+            var blogRedisKey = "NewBlogger:Blogs";
 
-            var internalBlog = _redisRepository.HashGet<Blog>(blogRedisKey, "Model");
+            var internalBlog = _redisRepository.ListRange<Blog>(blogRedisKey, 0, -1).FirstOrDefault(d => d.Id == blogId);
 
-            var categoryRedisKey = "NewBlogger:Categorys:Id";
+            var categoryRedisKey = "NewBlogger:Categorys";
 
             return new BlogDto
             {
                 CategoryId = internalBlog.CategoryId,
-                CategoryName = _redisRepository.StringGet<Category>(categoryRedisKey + internalBlog.CategoryId).Name,
+                CategoryName = _redisRepository.ListRange<Category>(categoryRedisKey, 0, -1).FirstOrDefault(d => d.Id == internalBlog.CategoryId).Name,
                 Content = internalBlog.Content,
                 Id = internalBlog.Id,
                 Title = internalBlog.Title,
@@ -65,12 +65,21 @@ namespace NewBlogger.Application
             };
         }
 
-        public async Task AddViewCountAsync(Guid blogId)
+        public void AddViewCount(Guid blogId)
         {
 
-            var blogRedisKey = $"NewBlogger:Blogs:Id:{blogId}";
+            var blogViewCountRedisKey = $"NewBlogger:BlogsViewCount:BlogId:{blogId}";
 
-            await _redisRepository.HashIncrementAsync(blogRedisKey, "ViewCount");
+            var value = _redisRepository.StringGet(blogViewCountRedisKey);
+
+            if ((value + "").Length <= 0)
+            {
+                _redisRepository.StringSet(blogViewCountRedisKey, 1);
+            }
+            else
+            {
+                _redisRepository.StringIncrement(blogViewCountRedisKey);
+            }
         }
 
         private IList<CommentDto> GetBlogComments(Guid blogId)

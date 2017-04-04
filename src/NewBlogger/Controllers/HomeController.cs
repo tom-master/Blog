@@ -39,6 +39,8 @@ namespace NewBlogger.Controllers
         [HttpGet]
         public IActionResult BlogDetail(Guid blogId)
         {
+            _blogService.AddViewCount(blogId);
+
             return View(_blogService.GetBlog(blogId));
         }
 

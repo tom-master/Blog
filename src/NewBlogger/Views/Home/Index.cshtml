@@ -9,22 +9,7 @@
 <div class="pagination pagination-centered" id="pagination"></div>
 <input id="pagination_setting" type="hidden" per="15">
 @section scripts{
-
-<script src="@Url.Content("~/js/handlebars-v4.0.5.js")"></script>
     <script src="@Url.Content("~/js/pager.js")"></script>
-
-    <script id="categories-template" type="text/x-handlebars-template">
-        <div class="float-lt col-lg-6">
-            <ul class="list-unstyled">
-                {{#each categories}}
-                <li>
-                    <a href="@Url.Action("Index","Home")?categoryId={{id}}">{{name}}&nbsp;({{blogCount}})</a>
-                </li>
-                {{/each}}
-            </ul>
-        </div>
-
-    </script>
 
     <script id="blogs-template" type="text/x-handlebars-template">
         {{#each blogs}}
@@ -54,18 +39,12 @@
 
     <script>
         $(function () {
-            getCategories();
+            
 
             getBlog(0);
         });
 
-        function getCategories() {
-            $.get('@Url.Action("GetCategories", "Home")', function (responseText) {
-                var tableTemplate = Handlebars.compile($("#categories-template").html());
-                $('#categories').html(tableTemplate(responseText));
-
-            });
-        }
+       
 
         function getBlog(current_page) {
             $.get('@Url.Action("GetBlogs", "Home")',

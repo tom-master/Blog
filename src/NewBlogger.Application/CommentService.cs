@@ -36,6 +36,19 @@ namespace NewBlogger.Application
             var commentBlogRedisKey = $"NewBlogger:Comments:BlogId:{blogId}";
 
             await _redisRepository.ListRightPushAsync(commentBlogRedisKey, comment);
+
+            var commentBlogCountRedisKey = $"NewBlogger:CommentBlogCount:BlogId:{blogId}";
+
+            var value = _redisRepository.StringGet(commentBlogCountRedisKey);
+
+            if ((value + "").Length <= 0)
+            {
+                _redisRepository.StringSet(commentBlogCountRedisKey, 1);
+            }
+            else
+            {
+                _redisRepository.StringIncrement(commentBlogCountRedisKey);
+            }
         }
     }
 }
