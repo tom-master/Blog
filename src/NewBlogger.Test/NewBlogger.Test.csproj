@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\NewBlogger.Application\NewBlogger.Application.csproj" />
     <ProjectReference Include="..\NewBlogger.Repository\NewBlogger.Repository.csproj" />
     <ProjectReference Include="..\NewBlogger.Model\NewBlogger.Model.csproj" />
   </ItemGroup>

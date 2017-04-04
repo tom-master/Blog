@@ -7,7 +7,7 @@ namespace NewBlogger.Model
 {
     public partial class Blog : ModelBase
     {
-        public Blog(String title, String content, Guid categoryId, params Guid[] tags)
+        public Blog(String title, String content, Guid categoryId, params Guid[] tagIds)
         {
             if ((title + "").Length <= 0)
             {
@@ -34,7 +34,7 @@ namespace NewBlogger.Model
 
             AddTime = DateTime.Now;
 
-            Tags = tags;
+            Tags = tagIds;
         }
 
         public String Title { get; private set; }

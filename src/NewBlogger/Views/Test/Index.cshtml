@@ -1,0 +1,50 @@
+﻿@model dynamic
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>title</title>
+</head>
+<body>
+    <div>
+        <p>目录</p>
+        <input type="text" value="" id="categoryName" />
+        <input type="button" id="addCategory" onclick="addCategory();" value="Add Category" />
+        <br />
+        <br />
+        <br />
+        <p>博客</p>
+        <label>标题</label><input type="text" value="" id="title" />
+        <label>内容</label><input type="text" value="" id="content" />
+        <label>目录Id</label><input type="text" value="" id="categoryId" />
+        <input type="button" id="addBlog" onclick="addBlog();" value="Add Blog" />
+    </div>
+</body>
+</html>
+<script src="~/js/jquery.min.js"></script>
+<script>
+    function addCategory() {
+        var categoryName = $('#categoryName').val();
+
+        $.post('@Url.Action("AddCategory","Test")',  { categoryName: categoryName}, function(responseText) {
+
+        });
+    }
+
+    function addBlog() {
+        var title = $('#title').val();
+
+        var content = $('#content').val();
+
+        var categoryId = $('#categoryId').val();
+
+        $.post('@Url.Action("AddBlog","Test")',{title,content,categoryId},function(responseText) {
+            
+        })
+    }
+</script>

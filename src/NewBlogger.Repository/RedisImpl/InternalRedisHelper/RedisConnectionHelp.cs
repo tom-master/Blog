@@ -13,7 +13,7 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         //系统自定义Key前缀
         public static readonly String SysCustomKey =  "";
 
-        private static readonly String _redisConnectionString = ReadMongodbConnectionString();
+        private static readonly String _redisConnectionString = ReadRedisConnectionString();
 
         private static readonly Object _locker = new Object();
 
@@ -139,7 +139,7 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
 
 
 
-        private static String ReadMongodbConnectionString()
+        private static String ReadRedisConnectionString()
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -150,7 +150,7 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
 
             if ((connectionStr + "").Length <= 0)
             {
-                throw new ArgumentNullException("ConnectionStrings:MongodbConnection cannot be null");
+                throw new ArgumentNullException("ConnectionStrings:RedisConnection cannot be null");
             }
 
             return builder["ConnectionStrings:RedisConnection"];

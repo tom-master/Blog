@@ -18,17 +18,17 @@ namespace NewBlogger.Application
         public CategoryService(RedisRepositoryBase redisRepository)
         {
             _redisRepository = redisRepository;
-        }
+        }@
 
         public IList<CategoryDto> GetCategorys()
         {
             var categoryRedisKey = "NewBlogger:Categorys";
 
-            var categoryBlogsRedisKey = "NewBlogger:Blogs";
+            var categoryBlogCountRedisKey = $"NewBlogger:CategoryBlogCount:Category:";
 
             return _redisRepository.ListRange<Category>(categoryRedisKey).Select(s => new CategoryDto
             {
-                BlogCount = (Int32)_redisRepository.ListLength(categoryBlogsRedisKey + s.Id),
+                BlogCount =Int32.Parse(_redisRepository.StringGet(categoryBlogCountRedisKey + s.Id)), 
                 Id = s.Id,
                 Name = s.Name
             }).ToList();

@@ -109,5 +109,27 @@ namespace NewBlogger.Application
                     Name = s.Name
                 }).ToList() : new List<TagDto>();
         }
+
+        public void AddNewBlog(String title, String content, Guid categoryId, params Guid[] tagIds)
+        {
+            var blog = new Blog(title, content, categoryId, tagIds);
+
+            var blogRedisKey = $"NewBlogger:Blogs:Id:{blog.Id}";
+
+            _redisRepository.HashSet(blogRedisKey, $"Blog:{blog.Id}", blog);
+
+            var categoryBlogCountRedisKey = $"NewBlogger:CategoryBlogCount:Category:{categoryId}";
+
+            var value = _redisRepository.StringGet(categoryBlogCountRedisKey);
+
+            if ((value + "").Length <= 0)
+            {
+                _redisRepository.StringSet(categoryBlogCountRedisKey, 1);
+            }
+            else
+            {
+                _redisRepository.StringIncrement(categoryBlogCountRedisKey);
+            }
+        }
     }
 }

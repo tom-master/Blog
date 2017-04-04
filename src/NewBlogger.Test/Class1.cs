@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using NewBlogger.Application;
 using NewBlogger.Model;
 using NewBlogger.Repository;
+using NewBlogger.Repository.RedisImpl;
 using Xunit;
 
 namespace NewBlogger.Test
@@ -15,6 +17,11 @@ namespace NewBlogger.Test
         public Class1()
         {
 
+        }
+
+        [Fact]
+        public void AddCategory()
+        {
         }
     }
 }
