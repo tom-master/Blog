@@ -1,43 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using NewBlogger.Application.Interface;
 using NewBlogger.Dto;
 using NewBlogger.Model;
-using NewBlogger.Repository;
-using NewBlogger.Repository.Base;
+using NewBlogger.Repository.RedisImpl;
 
 namespace NewBlogger.Application
 {
     public class BlogService : IBlogService
     {
-        private readonly RepositoryBase<Blog> _blogRepository;
 
-        private readonly RepositoryBase<Category> _categoryRepository;
+        private readonly RedisRepositoryBase _redisRepository;
 
-        private readonly RepositoryBase<Comment> _commentRepository;
-
-        private readonly RepositoryBase<Tag> _tagRepository;
-
-        public BlogService(RepositoryBase<Blog> blogRepository, RepositoryBase<Category> categoryRepository, RepositoryBase<Comment> commentRepository, RepositoryBase<Tag> tagRepository)
+        public BlogService(RedisRepositoryBase redisRepository)
         {
-            _blogRepository = blogRepository;
-
-            _categoryRepository = categoryRepository;
-
-            _commentRepository = commentRepository;
-
-            _tagRepository = tagRepository;
+            _redisRepository = redisRepository;
         }
 
         public IList<BlogDto> GetBlogs(Guid? categoryId, Int32 pageIndex, Int32 pageSize, out Int32 totalCount)
         {
-            return _blogRepository.Find(b => (categoryId == default(Guid?) || b.CategoryId == categoryId), pageIndex, pageSize, out totalCount).ToList().Select(s => new BlogDto
+            Int32 internalStart = (pageIndex - 1) * pageSize, internalEnd = (pageSize + internalStart) - 1;
+
+            var categoryBlogsRedisKey = $"NewBlogger:Blogs:CategoryId:{categoryId}";
+
+            var blogs = _redisRepository.ListRange<BlogDto>(categoryBlogsRedisKey, internalStart, internalEnd);
+
+            totalCount = (Int32)_redisRepository.ListLength(categoryBlogsRedisKey);
+
+            var commentBlogsRedisKey = "NewBlogger:Comments:BlogId:";
+
+            return blogs.Select(s => new BlogDto
             {
                 CategoryId = s.CategoryId,
-                CommentCount = _commentRepository.Find().Count(c => c.BlogId == s.Id),
+                CommentCount = (Int32)_redisRepository.ListLength(commentBlogsRedisKey + s.Id),
                 Content = s.Content,
                 Id = s.Id,
                 Title = s.Title,
@@ -48,13 +45,16 @@ namespace NewBlogger.Application
 
         public BlogDto GetBlog(Guid blogId)
         {
+            var blogRedisKey = $"NewBlogger:Blogs:Id:{blogId}";
 
-            var internalBlog = _blogRepository.Find().FirstOrDefault(b => b.Id == blogId);
+            var internalBlog = _redisRepository.HashGet<Blog>(blogRedisKey, "Model");
+
+            var categoryRedisKey = "NewBlogger:Categorys:Id";
 
             return new BlogDto
             {
                 CategoryId = internalBlog.CategoryId,
-                CategoryName = _categoryRepository.Find().FirstOrDefault(c => c.Id == internalBlog.CategoryId).Name,
+                CategoryName = _redisRepository.StringGet<Category>(categoryRedisKey + internalBlog.CategoryId).Name,
                 Content = internalBlog.Content,
                 Id = internalBlog.Id,
                 Title = internalBlog.Title,
@@ -67,21 +67,17 @@ namespace NewBlogger.Application
 
         public async Task AddViewCountAsync(Guid blogId)
         {
-            var blog = _blogRepository.Find().FirstOrDefault(b => b.Id == blogId);
 
-            blog.AddViewCount();
+            var blogRedisKey = $"NewBlogger:Blogs:Id:{blogId}";
 
-            IList<Tuple<Object, Object>> fields = new List<Tuple<Object, Object>>
-            {
-                new Tuple<Object, Object>("ViewCount", blog.ViewCount)
-            };
-
-            await _blogRepository.ModifyAsync(d => d.Id == blogId, fields);
+            await _redisRepository.HashIncrementAsync(blogRedisKey, "ViewCount");
         }
 
         private IList<CommentDto> GetBlogComments(Guid blogId)
         {
-            var comments = _commentRepository.Find().Where(w => w.BlogId == blogId);
+            var commentBlogsRedisKey = $"NewBlogger:Comments:BlogId:{blogId}";
+
+            var comments = _redisRepository.ListRange<Comment>(commentBlogsRedisKey, 0, -1);
 
             return comments.Any() ? comments.ToList().Where(w => w.ReplyId == w.Id || w.BlogId == blogId).Select(
                 s => new CommentDto
@@ -101,7 +97,9 @@ namespace NewBlogger.Application
                 return new List<TagDto>();
             }
 
-            var tags = _tagRepository.Find().Where(w => tagIds.Contains(w.Id));
+            var tagRedisKey = "NewBlogger:Tags";
+
+            var tags = _redisRepository.ListRange<Tag>(tagRedisKey).Where(w => tagIds.Contains(w.Id));
 
             return tags.Any() ? tags.Select(
                 s => new TagDto

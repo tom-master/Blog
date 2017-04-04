@@ -5,31 +5,37 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using NewBlogger.Application.Interface;
 using NewBlogger.Model;
-using NewBlogger.Repository;
-using NewBlogger.Repository.Base;
+using NewBlogger.Repository.RedisImpl;
 
 namespace NewBlogger.Application
 {
     public class CommentService : ICommentService
     {
-        private readonly RepositoryBase<Comment> _commentRepository;
+        private readonly RedisRepositoryBase _redisRepository;
 
-        public CommentService(RepositoryBase<Comment> commentRepository)
+        public CommentService(RedisRepositoryBase redisRepository)
         {
-            _commentRepository = commentRepository;
+            _redisRepository = redisRepository;
         }
 
 
-        public IList<Comment> GetComments(Expression<Func<Comment, Boolean>> filter, Int32 pageIndex, Int32 pageSize, out Int32 totalCount)
+        public IList<Comment> GetComments(String key, Int32 pageIndex, Int32 pageSize, out Int32 totalCount)
         {
-            return _commentRepository.Find(filter, pageIndex, pageSize, out totalCount).ToList();
+
+            Int32 internalStart = (pageIndex - 1) * pageSize, internalEnd = (pageSize + internalStart) - 1;
+
+            totalCount = (Int32)_redisRepository.ListLength(key);
+
+            return _redisRepository.ListRange<Comment>(key, internalStart, internalEnd);
         }
 
         public async Task AddCommentAsync(String nickName, String emailAddress, Guid blogId, String content, Guid? replyId = default(Guid?))
         {
-            var comment = new Comment(nickName,emailAddress,blogId, content, replyId);
+            var comment = new Comment(nickName, emailAddress, blogId, content, replyId);
 
-            await _commentRepository.AddAsync(comment);
+            var commentBlogRedisKey = $"NewBlogger:Comments:BlogId:{blogId}";
+
+            await _redisRepository.ListRightPushAsync(commentBlogRedisKey, comment);
         }
     }
 }

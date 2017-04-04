@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NewBlogger.Application;
 using NewBlogger.Application.Interface;
-using NewBlogger.Model;
-using NewBlogger.Repository;
-using NewBlogger.Repository.Base;
-using NewBlogger.Repository.MongodbImpl;
+using NewBlogger.Repository.RedisImpl;
 
 namespace NewBlogger
 {
@@ -33,7 +26,7 @@ namespace NewBlogger
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
+
 
             // Add framework services.
             services.AddMvc();
@@ -44,13 +37,7 @@ namespace NewBlogger
 
             services.AddTransient<ICommentService, CommentService>();
 
-            services.AddTransient<RepositoryBase<Blog>, MongodbRepository<Blog>>();
-
-            services.AddTransient<RepositoryBase<Category>, MongodbRepository<Category>>();
-
-            services.AddTransient<RepositoryBase<Comment>, MongodbRepository<Comment>>();
-
-            services.AddTransient<RepositoryBase<Tag>, MongodbRepository<Tag>>();
+            services.AddTransient(typeof(RedisRepositoryBase), typeof(DefaultRedisRepository));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

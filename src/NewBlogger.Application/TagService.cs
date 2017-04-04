@@ -6,23 +6,24 @@ using System.Threading.Tasks;
 using NewBlogger.Application.Interface;
 using NewBlogger.Dto;
 using NewBlogger.Model;
-using NewBlogger.Repository;
-using NewBlogger.Repository.Base;
+using NewBlogger.Repository.RedisImpl;
 
 namespace NewBlogger.Application
 {
     public class TagService : ITagService
     {
-        private readonly RepositoryBase<Tag> _tagRepository;
+        private readonly RedisRepositoryBase _redisRepository;
 
-        public TagService(RepositoryBase<Tag> tagRepository)
+        public TagService(RedisRepositoryBase redisRepository)
         {
-            _tagRepository = tagRepository;
+            _redisRepository = redisRepository;
         }
 
         public IList<TagDto> GetTags()
         {
-            return _tagRepository.Find().Select(s => new TagDto
+            var tagRedisKey = "NewBlogger:Tags";
+
+            return _redisRepository.ListRange<Tag>(tagRedisKey).Select(s => new TagDto
             {
                 AddTime = s.AddTime,
                 Id = s.Id,
@@ -30,10 +31,22 @@ namespace NewBlogger.Application
             }).ToList();
         }
 
-        public async Task AddTagAsync(String tagName) => await _tagRepository.AddAsync(new Tag(tagName));
+        public async Task AddTagAsync(String tagName)
+        {
+            var tagRedisKey = "NewBlogger:Tags";
+
+            await _redisRepository.ListRightPushAsync(tagRedisKey, new Tag(tagName));
+        }
 
 
-        public async Task RemoveTagAsync(Guid tagId) => await _tagRepository.RemoveAsync(tagId);
+        public async Task RemoveTagAsync(Guid tagId)
+        {
+            var categoryRedisKey = "NewBlogger:Tags";
+
+            var category = _redisRepository.ListRange<Tag>(categoryRedisKey).FirstOrDefault(w => w.Id == tagId);
+
+            await _redisRepository.ListRemoveAsync(categoryRedisKey, category);
+        }
 
     }
 }

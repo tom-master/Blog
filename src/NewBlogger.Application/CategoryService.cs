@@ -6,30 +6,29 @@ using System.Threading.Tasks;
 using NewBlogger.Application.Interface;
 using NewBlogger.Dto;
 using NewBlogger.Model;
-using NewBlogger.Repository;
-using NewBlogger.Repository.Base;
+using NewBlogger.Repository.RedisImpl;
 
 namespace NewBlogger.Application
 {
     public class CategoryService : ICategoryService
     {
-        private readonly RepositoryBase<Category> _categoryRepository;
 
-        private readonly RepositoryBase<Blog> _blogRepository;
+        private readonly RedisRepositoryBase _redisRepository;
 
-
-        public CategoryService(RepositoryBase<Category> categoryRepository, RepositoryBase<Blog> blogRepository)
+        public CategoryService(RedisRepositoryBase redisRepository)
         {
-            _categoryRepository = categoryRepository;
-
-            _blogRepository = blogRepository;
+            _redisRepository = redisRepository;
         }
 
         public IList<CategoryDto> GetCategorys()
         {
-            return _categoryRepository.Find().ToList().Select(s => new CategoryDto
+            var categoryRedisKey = "NewBlogger:Categorys";
+
+            var categoryBlogsRedisKey = "NewBlogger:Blogs";
+
+            return _redisRepository.ListRange<Category>(categoryRedisKey).Select(s => new CategoryDto
             {
-                BlogCount = _blogRepository.Find().Count(d => d.CategoryId == s.Id),
+                BlogCount = (Int32)_redisRepository.ListLength(categoryBlogsRedisKey + s.Id),
                 Id = s.Id,
                 Name = s.Name
             }).ToList();
@@ -39,22 +38,25 @@ namespace NewBlogger.Application
         {
             var category = new Category(categoryName);
 
-            await _categoryRepository.AddAsync(category);
+            var categoryRedisKey = "NewBlogger:Categorys";
+
+            await _redisRepository.ListRightPushAsync(categoryRedisKey, category);
         }
 
         public async Task RemoveCategoryAsync(Guid categoryId)
         {
-            await _categoryRepository.RemoveAsync(categoryId);
+            var categoryRedisKey = "NewBlogger:Categorys";
+
+            var category = _redisRepository.ListRange<Category>(categoryRedisKey).FirstOrDefault(w => w.Id == categoryId);
+
+            await _redisRepository.ListRemoveAsync(categoryRedisKey, category);
         }
 
         public async Task ModifyCategoryAsync(Guid categoryId, String newCategoryName)
         {
-            IList<Tuple<Object, Object>> fields = new List<Tuple<Object, Object>>
-            {
-                new Tuple<Object, Object>("Name", newCategoryName)
-            };
+            await RemoveCategoryAsync(categoryId);
 
-            await _categoryRepository.ModifyAsync(d => d.Id == categoryId, fields);
+            await AddCategoryAsync(newCategoryName);
         }
     }
 }

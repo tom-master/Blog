@@ -2,30 +2,30 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NewBlogger.Repository.RedisImpl.InternalRedisHelper;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 
-namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
+namespace NewBlogger.Repository.RedisImpl
 {
-    internal class InternalRedisOperationProvider
+    public abstract class RedisRepositoryBase : IRedisRepository
     {
         private Int32 DbNum { get; }
         private readonly ConnectionMultiplexer _conn;
-        private String _customKey;
 
         #region 构造函数
 
-        public InternalRedisOperationProvider() : this(0, null)
+        protected RedisRepositoryBase() : this(0, null)
         {
 
         }
 
-        public InternalRedisOperationProvider(Int32 dbNum = 0)
+        protected RedisRepositoryBase(Int32 dbNum = 0)
                 : this(dbNum, null)
         {
         }
 
-        public InternalRedisOperationProvider(Int32 dbNum, String readWriteHosts)
+        protected RedisRepositoryBase(Int32 dbNum, String readWriteHosts)
         {
             DbNum = dbNum;
             _conn =
@@ -47,10 +47,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// <param name="value">保存的值</param>
         /// <param name="expiry">过期时间</param>
         /// <returns></returns>
-        public Boolean StringSet(String key, String value, TimeSpan? expiry = default(TimeSpan?))
+        public virtual Boolean StringSet(String key, String value, TimeSpan? expiry = default(TimeSpan?))
         {
-            key = AddSysCustomKey(key);
-            return Do(db => db.StringSet(key, value, expiry));
+
+            return Execute(db => db.StringSet(key, value, expiry));
         }
 
         /// <summary>
@@ -58,27 +58,27 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// </summary>
         /// <param name="keyValues">键值对</param>
         /// <returns></returns>
-        public Boolean StringSet(IEnumerable<KeyValuePair<RedisKey, RedisValue>> keyValues)
+        public virtual Boolean StringSet(IEnumerable<KeyValuePair<RedisKey, RedisValue>> keyValues)
         {
 
-            List<KeyValuePair<RedisKey, RedisValue>> newkeyValues =
-                keyValues.Select(p => new KeyValuePair<RedisKey, RedisValue>(AddSysCustomKey(p.Key), p.Value)).ToList();
-            return Do(db => db.StringSet(newkeyValues.ToArray()));
+            var newkeyValues =
+                keyValues.Select(p => new KeyValuePair<RedisKey, RedisValue>(p.Key, p.Value)).ToList();
+            return Execute(db => db.StringSet(newkeyValues.ToArray()));
         }
 
         /// <summary>
         /// 保存一个对象
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TModel"></typeparam>
         /// <param name="key"></param>
         /// <param name="obj"></param>
         /// <param name="expiry"></param>
         /// <returns></returns>
-        public Boolean StringSet<T>(String key, T obj, TimeSpan? expiry = default(TimeSpan?))
+        public virtual Boolean StringSet<TModel>(String key, TModel obj, TimeSpan? expiry = default(TimeSpan?))
         {
-            key = AddSysCustomKey(key);
-            String json = ConvertJson(obj);
-            return Do(db => db.StringSet(key, json, expiry));
+
+            var json = ConvertJson(obj);
+            return Execute(db => db.StringSet(key, json, expiry));
         }
 
         /// <summary>
@@ -86,10 +86,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// </summary>
         /// <param name="key">Redis Key</param>
         /// <returns></returns>
-        public String StringGet(String key)
+        public virtual String StringGet(String key)
         {
-            key = AddSysCustomKey(key);
-            return Do(db => db.StringGet(key));
+
+            return Execute(db => db.StringGet(key));
         }
 
         /// <summary>
@@ -97,22 +97,21 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// </summary>
         /// <param name="listKey">Redis Key集合</param>
         /// <returns></returns>
-        public RedisValue[] StringGet(IEnumerable<String> listKey)
+        public virtual RedisValue[] StringGet(IEnumerable<String> listKey)
         {
-            List<String> newKeys = listKey.Select(AddSysCustomKey).ToList();
-            return Do(db => db.StringGet(ConvertRedisKeys(newKeys)));
+            return Execute(db => db.StringGet(ConvertRedisKeys(listKey.ToList())));
         }
 
         /// <summary>
         /// 获取一个key的对象
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TModel"></typeparam>
         /// <param name="key"></param>
         /// <returns></returns>
-        public T StringGet<T>(String key)
+        public virtual TModel StringGet<TModel>(String key)
         {
-            key = AddSysCustomKey(key);
-            return Do(db => ConvertObj<T>(db.StringGet(key)));
+
+            return Execute(db => ConvertObj<TModel>(db.StringGet(key)));
         }
 
         /// <summary>
@@ -121,10 +120,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// <param name="key"></param>
         /// <param name="val">可以为负</param>
         /// <returns>增长后的值</returns>
-        public Double StringIncrement(String key, Double val = 1)
+        public virtual Double StringIncrement(String key, Double val = 1)
         {
-            key = AddSysCustomKey(key);
-            return Do(db => db.StringIncrement(key, val));
+
+            return Execute(db => db.StringIncrement(key, val));
         }
 
         /// <summary>
@@ -133,10 +132,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// <param name="key"></param>
         /// <param name="val">可以为负</param>
         /// <returns>减少后的值</returns>
-        public Double StringDecrement(String key, Double val = 1)
+        public virtual Double StringDecrement(String key, Double val = 1)
         {
-            key = AddSysCustomKey(key);
-            return Do(db => db.StringDecrement(key, val));
+
+            return Execute(db => db.StringDecrement(key, val));
         }
 
         #endregion 同步方法
@@ -150,10 +149,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// <param name="value">保存的值</param>
         /// <param name="expiry">过期时间</param>
         /// <returns></returns>
-        public async Task<Boolean> StringSetAsync(String key, String value, TimeSpan? expiry = default(TimeSpan?))
+        public virtual async Task<Boolean> StringSetAsync(String key, String value, TimeSpan? expiry = default(TimeSpan?))
         {
-            key = AddSysCustomKey(key);
-            return await Do(db => db.StringSetAsync(key, value, expiry));
+
+            return await Execute(db => db.StringSetAsync(key, value, expiry));
         }
 
         /// <summary>
@@ -161,26 +160,26 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// </summary>
         /// <param name="keyValues">键值对</param>
         /// <returns></returns>
-        public async Task<Boolean> StringSetAsync(IEnumerable<KeyValuePair<RedisKey, RedisValue>> keyValues)
+        public virtual async Task<Boolean> StringSetAsync(IEnumerable<KeyValuePair<RedisKey, RedisValue>> keyValues)
         {
-            List<KeyValuePair<RedisKey, RedisValue>> newkeyValues =
-                keyValues.Select(p => new KeyValuePair<RedisKey, RedisValue>(AddSysCustomKey(p.Key), p.Value)).ToList();
-            return await Do(db => db.StringSetAsync(newkeyValues.ToArray()));
+            var newkeyValues = keyValues.Select(p => new KeyValuePair<RedisKey, RedisValue>(p.Key, p.Value)).ToList();
+
+            return await Execute(db => db.StringSetAsync(newkeyValues.ToArray()));
         }
 
         /// <summary>
         /// 保存一个对象
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TModel"></typeparam>
         /// <param name="key"></param>
         /// <param name="obj"></param>
         /// <param name="expiry"></param>
         /// <returns></returns>
-        public async Task<Boolean> StringSetAsync<T>(String key, T obj, TimeSpan? expiry = default(TimeSpan?))
+        public virtual async Task<Boolean> StringSetAsync<TModel>(String key, TModel obj, TimeSpan? expiry = default(TimeSpan?))
         {
-            key = AddSysCustomKey(key);
-            String json = ConvertJson(obj);
-            return await Do(db => db.StringSetAsync(key, json, expiry));
+            var json = ConvertJson(obj);
+
+            return await Execute(db => db.StringSetAsync(key, json, expiry));
         }
 
         /// <summary>
@@ -188,10 +187,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// </summary>
         /// <param name="key">Redis Key</param>
         /// <returns></returns>
-        public async Task<String> StringGetAsync(String key)
+        public virtual async Task<String> StringGetAsync(String key)
         {
-            key = AddSysCustomKey(key);
-            return await Do(db => db.StringGetAsync(key));
+
+            return await Execute(db => db.StringGetAsync(key));
         }
 
         /// <summary>
@@ -199,23 +198,22 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// </summary>
         /// <param name="listKey">Redis Key集合</param>
         /// <returns></returns>
-        public async Task<RedisValue[]> StringGetAsync(IEnumerable<String> listKey)
+        public virtual async Task<RedisValue[]> StringGetAsync(IEnumerable<String> listKey)
         {
-            List<String> newKeys = listKey.Select(AddSysCustomKey).ToList();
-            return await Do(db => db.StringGetAsync(ConvertRedisKeys(newKeys)));
+            return await Execute(db => db.StringGetAsync(ConvertRedisKeys(listKey.ToList())));
         }
 
         /// <summary>
         /// 获取一个key的对象
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TModel"></typeparam>
         /// <param name="key"></param>
         /// <returns></returns>
-        public async Task<T> StringGetAsync<T>(String key)
+        public virtual async Task<TModel> StringGetAsync<TModel>(String key)
         {
-            key = AddSysCustomKey(key);
-            String result = await Do(db => db.StringGetAsync(key));
-            return ConvertObj<T>(result);
+
+            String result = await Execute(db => db.StringGetAsync(key));
+            return ConvertObj<TModel>(result);
         }
 
         /// <summary>
@@ -224,10 +222,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// <param name="key"></param>
         /// <param name="val">可以为负</param>
         /// <returns>增长后的值</returns>
-        public async Task<Double> StringIncrementAsync(String key, Double val = 1)
+        public virtual async Task<Double> StringIncrementAsync(String key, Double val = 1)
         {
-            key = AddSysCustomKey(key);
-            return await Do(db => db.StringIncrementAsync(key, val));
+
+            return await Execute(db => db.StringIncrementAsync(key, val));
         }
 
         /// <summary>
@@ -236,10 +234,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// <param name="key"></param>
         /// <param name="val">可以为负</param>
         /// <returns>减少后的值</returns>
-        public async Task<Double> StringDecrementAsync(String key, Double val = 1)
+        public virtual async Task<Double> StringDecrementAsync(String key, Double val = 1)
         {
-            key = AddSysCustomKey(key);
-            return await Do(db => db.StringDecrementAsync(key, val));
+
+            return await Execute(db => db.StringDecrementAsync(key, val));
         }
 
         #endregion 异步方法
@@ -256,26 +254,26 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// <param name="key"></param>
         /// <param name="dataKey"></param>
         /// <returns></returns>
-        public Boolean HashExists(String key, String dataKey)
+        public virtual Boolean HashExists(String key, String dataKey)
         {
-            key = AddSysCustomKey(key);
-            return Do(db => db.HashExists(key, dataKey));
+
+            return Execute(db => db.HashExists(key, dataKey));
         }
 
         /// <summary>
         /// 存储数据到hash表
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TModel"></typeparam>
         /// <param name="key"></param>
         /// <param name="dataKey"></param>
         /// <param name="t"></param>
         /// <returns></returns>
-        public Boolean HashSet<T>(String key, String dataKey, T t)
+        public virtual Boolean HashSet<TModel>(String key, String dataKey, TModel t)
         {
-            key = AddSysCustomKey(key);
-            return Do(db =>
+
+            return Execute(db =>
             {
-                String json = ConvertJson(t);
+                var json = ConvertJson(t);
                 return db.HashSet(key, dataKey, json);
             });
         }
@@ -286,10 +284,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// <param name="key"></param>
         /// <param name="dataKey"></param>
         /// <returns></returns>
-        public Boolean HashDelete(String key, String dataKey)
+        public virtual Boolean HashDelete(String key, String dataKey)
         {
-            key = AddSysCustomKey(key);
-            return Do(db => db.HashDelete(key, dataKey));
+
+            return Execute(db => db.HashDelete(key, dataKey));
         }
 
         /// <summary>
@@ -298,27 +296,27 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// <param name="key"></param>
         /// <param name="dataKeys"></param>
         /// <returns></returns>
-        public Int64 HashDelete(String key, IEnumerable<RedisValue> dataKeys)
+        public virtual Int64 HashDelete(String key, IEnumerable<RedisValue> dataKeys)
         {
-            key = AddSysCustomKey(key);
+
             //List<RedisValue> dataKeys1 = new List<RedisValue>() {"1","2"};
-            return Do(db => db.HashDelete(key, dataKeys.ToArray()));
+            return Execute(db => db.HashDelete(key, dataKeys.ToArray()));
         }
 
         /// <summary>
         /// 从hash表获取数据
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TModel"></typeparam>
         /// <param name="key"></param>
         /// <param name="dataKey"></param>
         /// <returns></returns>
-        public T HashGet<T>(String key, String dataKey)
+        public virtual TModel HashGet<TModel>(String key, String dataKey)
         {
-            key = AddSysCustomKey(key);
-            return Do(db =>
+
+            return Execute(db =>
             {
                 String value = db.HashGet(key, dataKey);
-                return ConvertObj<T>(value);
+                return ConvertObj<TModel>(value);
             });
         }
 
@@ -329,10 +327,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// <param name="dataKey"></param>
         /// <param name="val">可以为负</param>
         /// <returns>增长后的值</returns>
-        public Double HashIncrement(String key, String dataKey, Double val = 1)
+        public virtual Double HashIncrement(String key, String dataKey, Double val = 1)
         {
-            key = AddSysCustomKey(key);
-            return Do(db => db.HashIncrement(key, dataKey, val));
+
+            return Execute(db => db.HashIncrement(key, dataKey, val));
         }
 
         /// <summary>
@@ -342,25 +340,25 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// <param name="dataKey"></param>
         /// <param name="val">可以为负</param>
         /// <returns>减少后的值</returns>
-        public Double HashDecrement(String key, String dataKey, Double val = 1)
+        public virtual Double HashDecrement(String key, String dataKey, Double val = 1)
         {
-            key = AddSysCustomKey(key);
-            return Do(db => db.HashDecrement(key, dataKey, val));
+
+            return Execute(db => db.HashDecrement(key, dataKey, val));
         }
 
         /// <summary>
         /// 获取hashkey所有Redis key
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TModel"></typeparam>
         /// <param name="key"></param>
         /// <returns></returns>
-        public List<T> HashKeys<T>(String key)
+        public virtual List<TModel> HashKeys<TModel>(String key)
         {
-            key = AddSysCustomKey(key);
-            return Do(db =>
+
+            return Execute(db =>
             {
-                RedisValue[] values = db.HashKeys(key);
-                return ConvetList<T>(values);
+                var values = db.HashKeys(key);
+                return ConvetList<TModel>(values);
             });
         }
 
@@ -374,26 +372,26 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// <param name="key"></param>
         /// <param name="dataKey"></param>
         /// <returns></returns>
-        public async Task<Boolean> HashExistsAsync(String key, String dataKey)
+        public virtual async Task<Boolean> HashExistsAsync(String key, String dataKey)
         {
-            key = AddSysCustomKey(key);
-            return await Do(db => db.HashExistsAsync(key, dataKey));
+
+            return await Execute(db => db.HashExistsAsync(key, dataKey));
         }
 
         /// <summary>
         /// 存储数据到hash表
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TModel"></typeparam>
         /// <param name="key"></param>
         /// <param name="dataKey"></param>
         /// <param name="t"></param>
         /// <returns></returns>
-        public async Task<Boolean> HashSetAsync<T>(String key, String dataKey, T t)
+        public virtual async Task<Boolean> HashSetAsync<TModel>(String key, String dataKey, TModel t)
         {
-            key = AddSysCustomKey(key);
-            return await Do(db =>
+
+            return await Execute(db =>
             {
-                String json = ConvertJson(t);
+                var json = ConvertJson(t);
                 return db.HashSetAsync(key, dataKey, json);
             });
         }
@@ -404,10 +402,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// <param name="key"></param>
         /// <param name="dataKey"></param>
         /// <returns></returns>
-        public async Task<Boolean> HashDeleteAsync(String key, String dataKey)
+        public virtual async Task<Boolean> HashDeleteAsync(String key, String dataKey)
         {
-            key = AddSysCustomKey(key);
-            return await Do(db => db.HashDeleteAsync(key, dataKey));
+
+            return await Execute(db => db.HashDeleteAsync(key, dataKey));
         }
 
         /// <summary>
@@ -416,25 +414,25 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// <param name="key"></param>
         /// <param name="dataKeys"></param>
         /// <returns></returns>
-        public async Task<Int64> HashDeleteAsync(String key, IEnumerable<RedisValue> dataKeys)
+        public virtual async Task<Int64> HashDeleteAsync(String key, IEnumerable<RedisValue> dataKeys)
         {
-            key = AddSysCustomKey(key);
+
             //List<RedisValue> dataKeys1 = new List<RedisValue>() {"1","2"};
-            return await Do(db => db.HashDeleteAsync(key, dataKeys.ToArray()));
+            return await Execute(db => db.HashDeleteAsync(key, dataKeys.ToArray()));
         }
 
         /// <summary>
         /// 从hash表获取数据
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TModel"></typeparam>
         /// <param name="key"></param>
         /// <param name="dataKey"></param>
         /// <returns></returns>
-        public async Task<T> HashGeAsync<T>(String key, String dataKey)
+        public virtual async Task<TModel> HashGeAsync<TModel>(String key, String dataKey)
         {
-            key = AddSysCustomKey(key);
-            String value = await Do(db => db.HashGetAsync(key, dataKey));
-            return ConvertObj<T>(value);
+
+            String value = await Execute(db => db.HashGetAsync(key, dataKey));
+            return ConvertObj<TModel>(value);
         }
 
         /// <summary>
@@ -444,10 +442,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// <param name="dataKey"></param>
         /// <param name="val">可以为负</param>
         /// <returns>增长后的值</returns>
-        public async Task<Double> HashIncrementAsync(String key, String dataKey, Double val = 1)
+        public virtual async Task<Double> HashIncrementAsync(String key, String dataKey, Double val = 1)
         {
-            key = AddSysCustomKey(key);
-            return await Do(db => db.HashIncrementAsync(key, dataKey, val));
+
+            return await Execute(db => db.HashIncrementAsync(key, dataKey, val));
         }
 
         /// <summary>
@@ -457,26 +455,23 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// <param name="dataKey"></param>
         /// <param name="val">可以为负</param>
         /// <returns>减少后的值</returns>
-        public async Task<Double> HashDecrementAsync(String key, String dataKey, Double val = 1)
+        public virtual async Task<Double> HashDecrementAsync(String key, String dataKey, Double val = 1)
         {
-            key = AddSysCustomKey(key);
-            return await Do(db => db.HashDecrementAsync(key, dataKey, val));
+
+            return await Execute(db => db.HashDecrementAsync(key, dataKey, val));
         }
 
         /// <summary>
         /// 获取hashkey所有Redis key
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TModel"></typeparam>
         /// <param name="key"></param>
         /// <returns></returns>
-        public async Task<List<T>> HashKeysAsync<T>(String key)
+        public virtual async Task<List<TModel>> HashKeysAsync<TModel>(String key)
         {
-            
 
-
-            key = AddSysCustomKey(key);
-            RedisValue[] values = await Do(db => db.HashKeysAsync(key));
-            return ConvetList<T>(values);
+            var values = await Execute(db => db.HashKeysAsync(key));
+            return ConvetList<TModel>(values);
         }
 
         #endregion 异步方法
@@ -492,10 +487,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public void ListRemove<T>(String key, T value)
+        public virtual void ListRemove<TModel>(String key, TModel value)
         {
-            key = AddSysCustomKey(key);
-            Do(db => db.ListRemove(key, ConvertJson(value)));
+
+            Execute(db => db.ListRemove(key, ConvertJson(value)));
         }
 
         /// <summary>
@@ -503,23 +498,23 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public List<T> ListRange<T>(String key)
+        public virtual List<TModel> ListRange<TModel>(String key)
         {
-            key = AddSysCustomKey(key);
-            return Do(redis =>
+
+            return Execute(redis =>
             {
                 var values = redis.ListRange(key);
-                return ConvetList<T>(values);
+                return ConvetList<TModel>(values);
             });
         }
 
-        public List<T> ListRange<T>(String key, Int32 start, Int32 end)
+        public virtual List<TModel> ListRange<TModel>(String key, Int32 start, Int32 end)
         {
-            key = AddSysCustomKey(key);
-            return Do(redis =>
+
+            return Execute(redis =>
             {
                 var values = redis.ListRange(key, start, end);
-                return ConvetList<T>(values);
+                return ConvetList<TModel>(values);
             });
         }
 
@@ -528,53 +523,53 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public void ListRightPush<T>(String key, T value)
+        public virtual void ListRightPush<TModel>(String key, TModel value)
         {
-            key = AddSysCustomKey(key);
-            Do(db => db.ListRightPush(key, ConvertJson(value)));
+
+            Execute(db => db.ListRightPush(key, ConvertJson(value)));
         }
 
         /// <summary>
         /// 出队
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TModel"></typeparam>
         /// <param name="key"></param>
         /// <returns></returns>
-        public T ListRightPop<T>(String key)
+        public virtual TModel ListRightPop<TModel>(String key)
         {
-            key = AddSysCustomKey(key);
-            return Do(db =>
+
+            return Execute(db =>
             {
                 var value = db.ListRightPop(key);
-                return ConvertObj<T>(value);
+                return ConvertObj<TModel>(value);
             });
         }
 
         /// <summary>
         /// 入栈
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TModel"></typeparam>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public void ListLeftPush<T>(String key, T value)
+        public virtual void ListLeftPush<TModel>(String key, TModel value)
         {
-            key = AddSysCustomKey(key);
-            Do(db => db.ListLeftPush(key, ConvertJson(value)));
+
+            Execute(db => db.ListLeftPush(key, ConvertJson(value)));
         }
 
         /// <summary>
         /// 出栈
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TModel"></typeparam>
         /// <param name="key"></param>
         /// <returns></returns>
-        public T ListLeftPop<T>(String key)
+        public virtual TModel ListLeftPop<TModel>(String key)
         {
-            key = AddSysCustomKey(key);
-            return Do(db =>
+
+            return Execute(db =>
             {
                 var value = db.ListLeftPop(key);
-                return ConvertObj<T>(value);
+                return ConvertObj<TModel>(value);
             });
         }
 
@@ -583,10 +578,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public Int64 ListLength(String key)
+        public virtual Int64 ListLength(String key)
         {
-            key = AddSysCustomKey(key);
-            return Do(redis => redis.ListLength(key));
+
+            return Execute(redis => redis.ListLength(key));
         }
 
         #endregion 同步方法
@@ -598,10 +593,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public async Task<Int64> ListRemoveAsync<T>(String key, T value)
+        public virtual async Task<Int64> ListRemoveAsync<TModel>(String key, TModel value)
         {
-            key = AddSysCustomKey(key);
-            return await Do(db => db.ListRemoveAsync(key, ConvertJson(value)));
+
+            return await Execute(db => db.ListRemoveAsync(key, ConvertJson(value)));
         }
 
         /// <summary>
@@ -609,11 +604,11 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public async Task<List<T>> ListRangeAsync<T>(String key)
+        public virtual async Task<List<TModel>> ListRangeAsync<TModel>(String key)
         {
-            key = AddSysCustomKey(key);
-            var values = await Do(redis => redis.ListRangeAsync(key));
-            return ConvetList<T>(values);
+
+            var values = await Execute(redis => redis.ListRangeAsync(key));
+            return ConvetList<TModel>(values);
         }
 
         /// <summary>
@@ -621,48 +616,48 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public async Task<Int64> ListRightPushAsync<T>(String key, T value)
+        public virtual async Task<Int64> ListRightPushAsync<TModel>(String key, TModel value)
         {
-            key = AddSysCustomKey(key);
-            return await Do(db => db.ListRightPushAsync(key, ConvertJson(value)));
+
+            return await Execute(db => db.ListRightPushAsync(key, ConvertJson(value)));
         }
 
         /// <summary>
         /// 出队
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TModel"></typeparam>
         /// <param name="key"></param>
         /// <returns></returns>
-        public async Task<T> ListRightPopAsync<T>(String key)
+        public virtual async Task<TModel> ListRightPopAsync<TModel>(String key)
         {
-            key = AddSysCustomKey(key);
-            var value = await Do(db => db.ListRightPopAsync(key));
-            return ConvertObj<T>(value);
+
+            var value = await Execute(db => db.ListRightPopAsync(key));
+            return ConvertObj<TModel>(value);
         }
 
         /// <summary>
         /// 入栈
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TModel"></typeparam>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public async Task<Int64> ListLeftPushAsync<T>(String key, T value)
+        public virtual async Task<Int64> ListLeftPushAsync<TModel>(String key, TModel value)
         {
-            key = AddSysCustomKey(key);
-            return await Do(db => db.ListLeftPushAsync(key, ConvertJson(value)));
+
+            return await Execute(db => db.ListLeftPushAsync(key, ConvertJson(value)));
         }
 
         /// <summary>
         /// 出栈
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TModel"></typeparam>
         /// <param name="key"></param>
         /// <returns></returns>
-        public async Task<T> ListLeftPopAsync<T>(String key)
+        public virtual async Task<TModel> ListLeftPopAsync<TModel>(String key)
         {
-            key = AddSysCustomKey(key);
-            var value = await Do(db => db.ListLeftPopAsync(key));
-            return ConvertObj<T>(value);
+
+            var value = await Execute(db => db.ListLeftPopAsync(key));
+            return ConvertObj<TModel>(value);
         }
 
         /// <summary>
@@ -670,10 +665,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public async Task<Int64> ListLengthAsync(String key)
+        public virtual async Task<Int64> ListLengthAsync(String key)
         {
-            key = AddSysCustomKey(key);
-            return await Do(redis => redis.ListLengthAsync(key));
+
+            return await Execute(redis => redis.ListLengthAsync(key));
         }
 
         #endregion 异步方法
@@ -690,10 +685,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <param name="score"></param>
-        public Boolean SortedSetAdd<T>(String key, T value, Double score)
+        public virtual Boolean SortedSetAdd<TModel>(String key, TModel value, Double score)
         {
-            key = AddSysCustomKey(key);
-            return Do(redis => redis.SortedSetAdd(key, ConvertJson<T>(value), score));
+
+            return Execute(redis => redis.SortedSetAdd(key, ConvertJson(value), score));
         }
 
         /// <summary>
@@ -701,10 +696,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public Boolean SortedSetRemove<T>(String key, T value)
+        public virtual Boolean SortedSetRemove<TModel>(String key, TModel value)
         {
-            key = AddSysCustomKey(key);
-            return Do(redis => redis.SortedSetRemove(key, ConvertJson(value)));
+
+            return Execute(redis => redis.SortedSetRemove(key, ConvertJson(value)));
         }
 
         /// <summary>
@@ -712,13 +707,13 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public List<T> SortedSetRangeByRank<T>(String key)
+        public virtual List<TModel> SortedSetRangeByRank<TModel>(String key)
         {
-            key = AddSysCustomKey(key);
-            return Do(redis =>
+
+            return Execute(redis =>
             {
                 var values = redis.SortedSetRangeByRank(key);
-                return ConvetList<T>(values);
+                return ConvetList<TModel>(values);
             });
         }
 
@@ -727,10 +722,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public Int64 SortedSetLength(String key)
+        public virtual Int64 SortedSetLength(String key)
         {
-            key = AddSysCustomKey(key);
-            return Do(redis => redis.SortedSetLength(key));
+
+            return Execute(redis => redis.SortedSetLength(key));
         }
 
         #endregion 同步方法
@@ -743,10 +738,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <param name="score"></param>
-        public async Task<Boolean> SortedSetAddAsync<T>(String key, T value, Double score)
+        public virtual async Task<Boolean> SortedSetAddAsync<TModel>(String key, TModel value, Double score)
         {
-            key = AddSysCustomKey(key);
-            return await Do(redis => redis.SortedSetAddAsync(key, ConvertJson<T>(value), score));
+
+            return await Execute(redis => redis.SortedSetAddAsync(key, ConvertJson(value), score));
         }
 
         /// <summary>
@@ -754,10 +749,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public async Task<Boolean> SortedSetRemoveAsync<T>(String key, T value)
+        public virtual async Task<Boolean> SortedSetRemoveAsync<TModel>(String key, TModel value)
         {
-            key = AddSysCustomKey(key);
-            return await Do(redis => redis.SortedSetRemoveAsync(key, ConvertJson(value)));
+
+            return await Execute(redis => redis.SortedSetRemoveAsync(key, ConvertJson(value)));
         }
 
         /// <summary>
@@ -765,11 +760,11 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public async Task<List<T>> SortedSetRangeByRankAsync<T>(String key)
+        public virtual async Task<List<TModel>> SortedSetRangeByRankAsync<TModel>(String key)
         {
-            key = AddSysCustomKey(key);
-            var values = await Do(redis => redis.SortedSetRangeByRankAsync(key));
-            return ConvetList<T>(values);
+
+            var values = await Execute(redis => redis.SortedSetRangeByRankAsync(key));
+            return ConvetList<TModel>(values);
         }
 
         /// <summary>
@@ -777,10 +772,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public async Task<Int64> SortedSetLengthAsync(String key)
+        public virtual async Task<Int64> SortedSetLengthAsync(String key)
         {
-            key = AddSysCustomKey(key);
-            return await Do(redis => redis.SortedSetLengthAsync(key));
+
+            return await Execute(redis => redis.SortedSetLengthAsync(key));
         }
 
         #endregion 异步方法
@@ -794,10 +789,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// </summary>
         /// <param name="key">redis key</param>
         /// <returns>是否删除成功</returns>
-        public Boolean KeyDelete(String key)
+        public virtual Boolean KeyDelete(String key)
         {
-            key = AddSysCustomKey(key);
-            return Do(db => db.KeyDelete(key));
+
+            return Execute(db => db.KeyDelete(key));
         }
 
         /// <summary>
@@ -805,10 +800,9 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// </summary>
         /// <param name="keys">rediskey</param>
         /// <returns>成功删除的个数</returns>
-        public Int64 KeyDelete(List<String> keys)
+        public virtual Int64 KeyDelete(List<String> keys)
         {
-            List<String> newKeys = keys.Select(AddSysCustomKey).ToList();
-            return Do(db => db.KeyDelete(ConvertRedisKeys(newKeys)));
+            return Execute(db => db.KeyDelete(ConvertRedisKeys(keys)));
         }
 
         /// <summary>
@@ -816,10 +810,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// </summary>
         /// <param name="key">redis key</param>
         /// <returns></returns>
-        public Boolean KeyExists(String key)
+        public virtual Boolean KeyExists(String key)
         {
-            key = AddSysCustomKey(key);
-            return Do(db => db.KeyExists(key));
+
+            return Execute(db => db.KeyExists(key));
         }
 
         /// <summary>
@@ -828,10 +822,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// <param name="key">就的redis key</param>
         /// <param name="newKey">新的redis key</param>
         /// <returns></returns>
-        public Boolean KeyRename(String key, String newKey)
+        public virtual Boolean KeyRename(String key, String newKey)
         {
-            key = AddSysCustomKey(key);
-            return Do(db => db.KeyRename(key, newKey));
+
+            return Execute(db => db.KeyRename(key, newKey));
         }
 
         /// <summary>
@@ -840,10 +834,10 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// <param name="key">redis key</param>
         /// <param name="expiry"></param>
         /// <returns></returns>
-        public Boolean KeyExpire(String key, TimeSpan? expiry = default(TimeSpan?))
+        public virtual Boolean KeyExpire(String key, TimeSpan? expiry = default(TimeSpan?))
         {
-            key = AddSysCustomKey(key);
-            return Do(db => db.KeyExpire(key, expiry));
+
+            return Execute(db => db.KeyExpire(key, expiry));
         }
 
         #endregion key
@@ -855,9 +849,9 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// </summary>
         /// <param name="subChannel"></param>
         /// <param name="handler"></param>
-        public void Subscribe(String subChannel, Action<RedisChannel, RedisValue> handler = null)
+        public virtual void Subscribe(String subChannel, Action<RedisChannel, RedisValue> handler = null)
         {
-            ISubscriber sub = _conn.GetSubscriber();
+            var sub = _conn.GetSubscriber();
             sub.Subscribe(subChannel, (channel, message) =>
             {
                 if (handler == null)
@@ -874,13 +868,13 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// <summary>
         /// Redis发布订阅  发布
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TModel"></typeparam>
         /// <param name="channel"></param>
         /// <param name="msg"></param>
         /// <returns></returns>
-        public Int64 Publish<T>(String channel, T msg)
+        public virtual Int64 Publish<TModel>(String channel, TModel msg)
         {
-            ISubscriber sub = _conn.GetSubscriber();
+            var sub = _conn.GetSubscriber();
             return sub.Publish(channel, ConvertJson(msg));
         }
 
@@ -888,18 +882,18 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
         /// Redis发布订阅  取消订阅
         /// </summary>
         /// <param name="channel"></param>
-        public void Unsubscribe(String channel)
+        public virtual void Unsubscribe(String channel)
         {
-            ISubscriber sub = _conn.GetSubscriber();
+            var sub = _conn.GetSubscriber();
             sub.Unsubscribe(channel);
         }
 
         /// <summary>
         /// Redis发布订阅  取消全部订阅
         /// </summary>
-        public void UnsubscribeAll()
+        public virtual void UnsubscribeAll()
         {
-            ISubscriber sub = _conn.GetSubscriber();
+            var sub = _conn.GetSubscriber();
             sub.UnsubscribeAll();
         }
 
@@ -907,73 +901,59 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
 
         #region 其他
 
-        public ITransaction CreateTransaction()
+        public virtual ITransaction CreateTransaction()
         {
             return GetDatabase().CreateTransaction();
         }
 
-        public IDatabase GetDatabase()
+        public virtual IDatabase GetDatabase()
         {
             return _conn.GetDatabase(DbNum);
         }
 
-        public IServer GetServer(String hostAndPort)
+        public virtual IServer GetServer(String hostAndPort)
         {
             return _conn.GetServer(hostAndPort);
         }
 
-        /// <summary>
-        /// 设置前缀
-        /// </summary>
-        /// <param name="customKey"></param>
-        public void SetSysCustomKey(String customKey)
-        {
-            _customKey = customKey;
-        }
+
 
         #endregion 其他
 
         #region 辅助方法
 
-        private String AddSysCustomKey(String oldKey)
-        {
-            var prefixKey = _customKey ?? RedisConnectionHelp.SysCustomKey;
-            return prefixKey + oldKey;
-        }
-
-        private T Do<T>(Func<IDatabase, T> func)
+        protected virtual TModel Execute<TModel>(Func<IDatabase, TModel> func)
         {
             var database = _conn.GetDatabase(DbNum);
-
-
 
             return func(database);
         }
 
-        private String ConvertJson<T>(T value)
+        private String ConvertJson<TModel>(TModel value)
         {
-            String result = value is String ? value.ToString() : JsonConvert.SerializeObject(value, Formatting.Indented, new JsonSerializerSettings
+            var result = value is String ? value.ToString() : JsonConvert.SerializeObject(value, Formatting.Indented, new JsonSerializerSettings
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             });
+
             return result;
         }
 
-        private T ConvertObj<T>(RedisValue value)
+        private TModel ConvertObj<TModel>(RedisValue value)
         {
             if (value.IsNull)
             {
-                return default(T);
+                return default(TModel);
             }
-            return JsonConvert.DeserializeObject<T>(value);
+            return JsonConvert.DeserializeObject<TModel>(value);
         }
 
-        private List<T> ConvetList<T>(RedisValue[] values)
+        private List<TModel> ConvetList<TModel>(RedisValue[] values)
         {
-            List<T> result = new List<T>();
+            var result = new List<TModel>();
             foreach (var item in values)
             {
-                var model = ConvertObj<T>(item);
+                var model = ConvertObj<TModel>(item);
                 result.Add(model);
             }
             return result;
@@ -984,17 +964,17 @@ namespace NewBlogger.Repository.RedisImpl.InternalRedisHelper
             return redisKeys.Select(redisKey => (RedisKey)redisKey).ToArray();
         }
 
-        #endregion 辅助方法
-
-
-
-        public RedisType GetKeyType(String key)
+        protected RedisType GetKeyType(String key)
         {
-            key = AddSysCustomKey(key);
 
-            var keyType = Do(db => db.KeyType(key));
+
+            var keyType = Execute(db => db.KeyType(key));
 
             return keyType;
         }
+
+        #endregion 辅助方法
+
+
     }
 }
