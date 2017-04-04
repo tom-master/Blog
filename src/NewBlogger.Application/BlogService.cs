@@ -23,11 +23,11 @@ namespace NewBlogger.Application
         {
             Int32 internalStart = (pageIndex - 1) * pageSize, internalEnd = (pageSize + internalStart) - 1;
 
-            var categoryBlogsRedisKey = $"NewBlogger:Blogs:CategoryId:{categoryId}";
+            var blogRedisKey = "NewBlogger:Blogs";
 
-            var blogs = _redisRepository.ListRange<BlogDto>(categoryBlogsRedisKey, internalStart, internalEnd);
+            var blogs = _redisRepository.ListRange<BlogDto>(blogRedisKey, internalStart, internalEnd);
 
-            totalCount = (Int32)_redisRepository.ListLength(categoryBlogsRedisKey);
+            totalCount = (Int32)_redisRepository.ListLength(blogRedisKey);
 
             var commentBlogsRedisKey = "NewBlogger:Comments:BlogId:";
 
@@ -114,9 +114,9 @@ namespace NewBlogger.Application
         {
             var blog = new Blog(title, content, categoryId, tagIds);
 
-            var blogRedisKey = $"NewBlogger:Blogs:Id:{blog.Id}";
+            var blogRedisKey = "NewBlogger:Blogs";
 
-            _redisRepository.HashSet(blogRedisKey, $"Blog:{blog.Id}", blog);
+            _redisRepository.ListRightPush(blogRedisKey, blog);
 
             var categoryBlogCountRedisKey = $"NewBlogger:CategoryBlogCount:Category:{categoryId}";
 

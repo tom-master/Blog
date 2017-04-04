@@ -171,6 +171,15 @@ namespace NewBlogger.Repository.RedisImpl
         Boolean HashSet<TModel>(String key, String dataKey, TModel t);
 
         /// <summary>
+        /// 存储数据到hash表
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="dataKey"></param>
+        /// <param name="dataValue"></param>
+        /// <returns></returns>
+        Boolean HashSet(String key, String dataKey, String dataValue);
+
+        /// <summary>
         /// 移除hash中的某值
         /// </summary>
         /// <param name="key"></param>

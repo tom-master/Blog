@@ -278,6 +278,11 @@ namespace NewBlogger.Repository.RedisImpl
             });
         }
 
+        public virtual Boolean HashSet(String key, String dataKey, String dataValue)
+        {
+            return Execute(db => db.HashSet(key, dataKey, dataValue));
+        }
+
         /// <summary>
         /// 移除hash中的某值
         /// </summary>
@@ -299,7 +304,6 @@ namespace NewBlogger.Repository.RedisImpl
         public virtual Int64 HashDelete(String key, IEnumerable<RedisValue> dataKeys)
         {
 
-            //List<RedisValue> dataKeys1 = new List<RedisValue>() {"1","2"};
             return Execute(db => db.HashDelete(key, dataKeys.ToArray()));
         }
 
@@ -972,6 +976,8 @@ namespace NewBlogger.Repository.RedisImpl
 
             return keyType;
         }
+
+
 
         #endregion 辅助方法
 
