@@ -185,7 +185,7 @@ namespace NewBlogger.Repository.RedisImpl
         /// <param name="key"></param>
         /// <param name="hashEntries"></param>
         /// <returns></returns>
-        Boolean HashSet(String key, HashEntry[] hashEntries);
+        void HashSet(String key, HashEntry[] hashEntries);
 
         /// <summary>
         /// 移除hash中的某值
@@ -211,6 +211,15 @@ namespace NewBlogger.Repository.RedisImpl
         /// <param name="dataKey"></param>
         /// <returns></returns>
         TModel HashGet<TModel>(String key, String dataKey);
+
+        /// <summary>
+        /// 从hash表获取数据
+        /// </summary>
+        /// <typeparam name="TModel"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="redisValues"></param>
+        /// <returns></returns>
+        IList<TModel> HashGet<TModel>(String key, RedisValue[] redisValues);
 
         /// <summary>
         /// 为数字增长val

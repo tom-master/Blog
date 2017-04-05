@@ -15,8 +15,5 @@ namespace NewBlogger.Model
         public Guid Id { get; set; }
 
         public DateTime AddTime { get; set; }
-
-        public Boolean IsDelete { get; set; }
-
     }
 }

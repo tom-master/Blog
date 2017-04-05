@@ -6,6 +6,8 @@ using NewBlogger.Application.Interface;
 using NewBlogger.Dto;
 using NewBlogger.Model;
 using NewBlogger.Repository.RedisImpl;
+using Newtonsoft.Json;
+using StackExchange.Redis;
 
 namespace NewBlogger.Application
 {
@@ -23,31 +25,21 @@ namespace NewBlogger.Application
         {
             Int32 internalStart = (pageIndex - 1) * pageSize, internalEnd = (pageSize + internalStart) - 1;
 
-            var blogRedisKey = "NewBlogger:Blogs";
+            var blogIdsRedisKey = "NewBlogger:BlogIds:Id";
 
-            var blogs = _redisRepository.ListRange<Blog>(blogRedisKey, internalStart, internalEnd);
+            var blogIds = _redisRepository.ListRange<Guid>(blogIdsRedisKey, internalStart, internalEnd);
 
-            totalCount = (Int32)_redisRepository.ListLength(blogRedisKey);
+            totalCount = (Int32)_redisRepository.ListLength(blogIdsRedisKey);
 
-            var commentBlogsRedisKey = "NewBlogger:Comments:BlogId:";
+            return blogIds.Select(GetBlog).ToList();
 
-            return blogs.Select(s => new BlogDto
-            {
-                CategoryId = s.CategoryId,
-                CommentCount = (Int32)_redisRepository.ListLength(commentBlogsRedisKey + s.Id),
-                Content = s.Content,
-                Id = s.Id,
-                Title = s.Title,
-                ViewCount = s.ViewCount,
-                AddTime = DateTime.Parse(s.AddTime.ToString("yyyy-MM-dd HH:mm:ss")),
-            }).ToList();
         }
 
         public BlogDto GetBlog(Guid blogId)
         {
-            var blogRedisKey = "NewBlogger:Blogs";
+            var blogRedisKey = $"NewBlogger:Blogs:Id:{blogId}";
 
-            var internalBlog = _redisRepository.ListRange<Blog>(blogRedisKey, 0, -1).FirstOrDefault(d => d.Id == blogId);
+            var internalBlog = _redisRepository.HashGet<Blog>(blogRedisKey, new RedisValue[0]).FirstOrDefault();
 
             var categoryRedisKey = "NewBlogger:Categorys";
 
@@ -61,25 +53,16 @@ namespace NewBlogger.Application
                 ViewCount = internalBlog.ViewCount,
                 AddTime = DateTime.Parse(internalBlog.AddTime.ToString("yyyy-MM-dd HH:mm:ss")),
                 Comments = GetBlogComments(internalBlog.Id),
-                Tags = GetBlogTag(internalBlog.Tags)
+                Tags = GetBlogTag(internalBlog.Tags),
+                CommentCount = 0
             };
         }
 
         public void AddViewCount(Guid blogId)
         {
+            var blogRedisKey = $"NewBlogger:Blogs:Id:{blogId}";
 
-            var blogViewCountRedisKey = $"NewBlogger:BlogsViewCount:BlogId:{blogId}";
-
-            var value = _redisRepository.StringGet(blogViewCountRedisKey);
-
-            if ((value + "").Length <= 0)
-            {
-                _redisRepository.StringSet(blogViewCountRedisKey, 1);
-            }
-            else
-            {
-                _redisRepository.StringIncrement(blogViewCountRedisKey);
-            }
+            _redisRepository.HashIncrement(blogRedisKey, "ViewCount");
         }
 
         private IList<CommentDto> GetBlogComments(Guid blogId)
@@ -125,20 +108,26 @@ namespace NewBlogger.Application
 
             var blogRedisKey = $"NewBlogger:Blogs:Id:{blog.Id}";
 
-            _redisRepository.HashSet(blogRedisKey, nameof(blog.Id), blog.Id);
-
-            var categoryBlogCountRedisKey = $"NewBlogger:CategoryBlogCount:Category:{categoryId}";
-
-            var value = _redisRepository.StringGet(categoryBlogCountRedisKey);
-
-            if ((value + "").Length <= 0)
+            _redisRepository.HashSet(blogRedisKey, new List<HashEntry>
             {
-                _redisRepository.StringSet(categoryBlogCountRedisKey, 1);
-            }
-            else
-            {
-                _redisRepository.StringIncrement(categoryBlogCountRedisKey);
-            }
+                new HashEntry(nameof(blog.Id),$"{blog.Id}"),
+
+                new HashEntry(nameof(blog.Title),blog.Title),
+
+                new HashEntry(nameof(blog.Content),blog.Content),
+
+                new HashEntry(nameof(blog.CategoryId),$"{blog.CategoryId}"),
+
+                new HashEntry(nameof(blog.AddTime),$"{blog.AddTime}"),
+
+                new HashEntry(nameof(blog.Tags),JsonConvert.SerializeObject(blog.Tags)),
+
+                new HashEntry(nameof(blog.ViewCount),0)
+            }.ToArray());
+
+            var blogIdsRedisKey = "NewBlogger:BlogIds:Id";
+
+            _redisRepository.ListRightPush(blogIdsRedisKey, blog.Id);
         }
     }
 }

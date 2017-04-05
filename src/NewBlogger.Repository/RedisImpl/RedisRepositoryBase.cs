@@ -296,9 +296,13 @@ namespace NewBlogger.Repository.RedisImpl
         /// <param name="key"></param>
         /// <param name="hashEntries"></param>
         /// <returns></returns>
-        public Boolean HashSet(String key, HashEntry[] hashEntries)
+        public virtual void HashSet(String key, HashEntry[] hashEntries)
         {
-            throw new NotImplementedException();
+            Execute(db =>
+            {
+                db.HashSet(key, hashEntries);
+                return true;
+            });
         }
 
         /// <summary>
@@ -340,6 +344,22 @@ namespace NewBlogger.Repository.RedisImpl
                 String value = db.HashGet(key, dataKey);
                 return ConvertObj<TModel>(value);
             });
+        }
+
+        /// <summary>
+        /// 从hash表获取数据
+        /// </summary>
+        /// <typeparam name="TModel"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="redisValues"></param>
+        /// <returns></returns>
+        public virtual IList<TModel> HashGet<TModel>(String key, RedisValue[] redisValues)
+        {
+            return Execute(db =>
+             {
+                 RedisValue[] value = db.HashGet(key, redisValues);
+                 return ConvetList<TModel>(value);
+             });
         }
 
         /// <summary>
@@ -951,6 +971,8 @@ namespace NewBlogger.Repository.RedisImpl
             return func(database);
         }
 
+
+
         private String ConvertJson<TModel>(TModel value)
         {
             var result = value is String ? value.ToString() : JsonConvert.SerializeObject(value, Formatting.Indented, new JsonSerializerSettings
@@ -970,7 +992,7 @@ namespace NewBlogger.Repository.RedisImpl
             return JsonConvert.DeserializeObject<TModel>(value);
         }
 
-        private List<TModel> ConvetList<TModel>(RedisValue[] values)
+        private IList<TModel> ConvetList<TModel>(RedisValue[] values)
         {
             var result = new List<TModel>();
             foreach (var item in values)
