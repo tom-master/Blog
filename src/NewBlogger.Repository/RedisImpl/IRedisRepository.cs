@@ -180,6 +180,14 @@ namespace NewBlogger.Repository.RedisImpl
         Boolean HashSet(String key, String dataKey, String dataValue);
 
         /// <summary>
+        /// 存储数据到hash表
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="hashEntries"></param>
+        /// <returns></returns>
+        Boolean HashSet(String key, HashEntry[] hashEntries);
+
+        /// <summary>
         /// 移除hash中的某值
         /// </summary>
         /// <param name="key"></param>

@@ -23,7 +23,14 @@ namespace NewBlogger.Test
         [Fact]
         public void AddCategory()
         {
-           
+            var model = new TestModel();
+
+            var result = nameof(model.Name);
         }
+    }
+
+    public class TestModel
+    {
+        public String Name { get; set; }
     }
 }

@@ -123,9 +123,9 @@ namespace NewBlogger.Application
         {
             var blog = new Blog(title, content, categoryId, tagIds);
 
-            var blogRedisKey = "NewBlogger:Blogs";
+            var blogRedisKey = $"NewBlogger:Blogs:Id:{blog.Id}";
 
-            _redisRepository.ListRightPush(blogRedisKey, blog);
+            _redisRepository.HashSet(blogRedisKey, nameof(blog.Id), blog.Id);
 
             var categoryBlogCountRedisKey = $"NewBlogger:CategoryBlogCount:Category:{categoryId}";
 

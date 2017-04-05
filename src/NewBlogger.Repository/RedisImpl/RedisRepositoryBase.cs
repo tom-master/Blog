@@ -278,9 +278,27 @@ namespace NewBlogger.Repository.RedisImpl
             });
         }
 
+        /// <summary>
+        /// 存储数据到hash表
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="dataKey"></param>
+        /// <param name="dataValue"></param>
+        /// <returns></returns>
         public virtual Boolean HashSet(String key, String dataKey, String dataValue)
         {
             return Execute(db => db.HashSet(key, dataKey, dataValue));
+        }
+
+        /// <summary>
+        /// 存储数据到hash表
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="hashEntries"></param>
+        /// <returns></returns>
+        public Boolean HashSet(String key, HashEntry[] hashEntries)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
