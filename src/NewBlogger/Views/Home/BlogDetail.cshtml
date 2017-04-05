@@ -16,7 +16,7 @@
         </h2>
         <div class="clr"></div>
         <p>Posted by <a href="#">Owner</a> </p>
-        <p>@Model.Content</p>
+        <p>@Html.Raw(System.Net.WebUtility.HtmlDecode(Model.Content))</p>
         <p>
             Tagged:
             @{
@@ -48,9 +48,11 @@
                         <a href="javascript:void(0)"><img src="~/images/userpic.gif" width="40" height="40" alt="" class="userpic"></a>
                         <p>
                             <a href="javascript:void(0);">@comment.ReplyNickName</a> Says:<br>
+                             
+                                @Html.Raw(System.Net.WebUtility.HtmlDecode(comment.Content))
+                            
                             @comment.AddTime.ToString("yyyy-MM-dd HH:mm:ss")
                         </p>
-                      @Html.Raw(comment.Content)
                     </div>
                 </div>
                 </text>

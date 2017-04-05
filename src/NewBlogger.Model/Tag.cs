@@ -16,6 +16,10 @@ namespace NewBlogger.Model
             }
 
             Name = name;
+
+            Id = Guid.NewGuid();
+
+            AddTime = DateTime.Now;
         }
 
 

@@ -25,7 +25,7 @@ namespace NewBlogger.Application
 
             var blogRedisKey = "NewBlogger:Blogs";
 
-            var blogs = _redisRepository.ListRange<BlogDto>(blogRedisKey, internalStart, internalEnd);
+            var blogs = _redisRepository.ListRange<Blog>(blogRedisKey, internalStart, internalEnd);
 
             totalCount = (Int32)_redisRepository.ListLength(blogRedisKey);
 
@@ -39,7 +39,7 @@ namespace NewBlogger.Application
                 Id = s.Id,
                 Title = s.Title,
                 ViewCount = s.ViewCount,
-                AddTime = s.AddTime,
+                AddTime = DateTime.Parse(s.AddTime.ToString("yyyy-MM-dd HH:mm:ss")),
             }).ToList();
         }
 
@@ -59,7 +59,7 @@ namespace NewBlogger.Application
                 Id = internalBlog.Id,
                 Title = internalBlog.Title,
                 ViewCount = internalBlog.ViewCount,
-                AddTime = internalBlog.AddTime,
+                AddTime = DateTime.Parse(internalBlog.AddTime.ToString("yyyy-MM-dd HH:mm:ss")),
                 Comments = GetBlogComments(internalBlog.Id),
                 Tags = GetBlogTag(internalBlog.Tags)
             };

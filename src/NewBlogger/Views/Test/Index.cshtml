@@ -22,7 +22,11 @@
         <label>标题</label><input type="text" value="" id="title" />
         <label>内容</label><input type="text" value="" id="content" />
         <label>目录Id</label><input type="text" value="" id="categoryId" />
+        <label>标签Id</label><input type="text" value="" id="tagId" />
         <input type="button" id="addBlog" onclick="addBlog();" value="Add Blog" />
+        <p>标签</p>
+        <input type="text" value="" id="tagName" />
+        <input type="button" id="addTag" onclick="addTag();" value="Add Tag" />
     </div>
 </body>
 </html>
@@ -43,8 +47,16 @@
 
         var categoryId = $('#categoryId').val();
 
-        $.post('@Url.Action("AddBlog","Test")',{title,content,categoryId},function(responseText) {
-            
-        })
+        var tagId = $('#tagId').val();
+
+        $.post('@Url.Action("AddBlog","Test")', { title, content, categoryId,tagId }, function(responseText) {
+
+        });
+    }
+
+    function addTag() {
+        var tagName = $('#tagName').val();
+
+        $.post('@Url.Action("AddTag","Test")', { tagName}, function(responseText) {});
     }
 </script>

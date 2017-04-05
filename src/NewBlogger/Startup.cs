@@ -37,6 +37,8 @@ namespace NewBlogger
 
             services.AddTransient<ICommentService, CommentService>();
 
+            services.AddTransient<ITagService, TagService>();
+
             services.AddTransient(typeof(RedisRepositoryBase), typeof(DefaultRedisRepository));
         }
 

@@ -7,6 +7,7 @@ using NewBlogger.Application;
 using NewBlogger.Model;
 using NewBlogger.Repository;
 using NewBlogger.Repository.RedisImpl;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace NewBlogger.Test
@@ -22,6 +23,7 @@ namespace NewBlogger.Test
         [Fact]
         public void AddCategory()
         {
+           
         }
     }
 }

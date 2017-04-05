@@ -12,12 +12,16 @@ namespace NewBlogger.Controllers
 
         private readonly IBlogService _blogService;
 
+        private readonly ITagService _tagService;
 
-        public TestController(ICategoryService categoryService, IBlogService blogService)
+
+        public TestController(ICategoryService categoryService, IBlogService blogService, ITagService tagService)
         {
             _categoryService = categoryService;
 
             _blogService = blogService;
+
+            _tagService = tagService;
         }
 
 
@@ -35,9 +39,16 @@ namespace NewBlogger.Controllers
             return Json(new { });
         }
 
-        public IActionResult AddBlog(String title, String content, Guid categoryId)
+        public IActionResult AddBlog(String title, String content, Guid categoryId, Guid tagId)
         {
-            _blogService.AddNewBlog(title, content, categoryId);
+            _blogService.AddNewBlog(title, content, categoryId, tagId);
+
+            return Json(new { });
+        }
+
+        public async Task<IActionResult> AddTag(String tagName)
+        {
+            await _tagService.AddTagAsync(tagName);
 
             return Json(new { });
         }
