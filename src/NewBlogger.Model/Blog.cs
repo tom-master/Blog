@@ -45,6 +45,7 @@ namespace NewBlogger.Model
 
         public Int32 ViewCount { get; private set; }
 
+        public Int32 CommentCount { get; private set; }
 
         public Guid[] Tags { get; private set; }
 

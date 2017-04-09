@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
 using NewBlogger.Application.Interface;
 using NewBlogger.Model;
 using NewBlogger.Repository.RedisImpl;
+using StackExchange.Redis;
 
 namespace NewBlogger.Application
 {
@@ -19,36 +17,42 @@ namespace NewBlogger.Application
         }
 
 
-        public IList<Comment> GetComments(String key, Int32 pageIndex, Int32 pageSize, out Int32 totalCount)
+        public IList<Comment> GetComments(Guid blogId)
         {
+            var commentBlogRedisKey = $"NewBlogger:Comments:BlogId:{blogId}";
 
-            Int32 internalStart = (pageIndex - 1) * pageSize, internalEnd = (pageSize + internalStart) - 1;
+            return _redisRepository.HashGet<Comment>(commentBlogRedisKey, new List<RedisValue>
+            {
 
-            totalCount = (Int32)_redisRepository.ListLength(key);
-
-            return _redisRepository.ListRange<Comment>(key, internalStart, internalEnd);
+            }.ToArray());
         }
 
-        public async Task AddCommentAsync(String nickName, String emailAddress, Guid blogId, String content, Guid? replyId = default(Guid?))
+        public void AddComment(String nickName, String emailAddress, Guid blogId, String content, Guid? replyId = default(Guid?))
         {
             var comment = new Comment(nickName, emailAddress, blogId, content, replyId);
 
             var commentBlogRedisKey = $"NewBlogger:Comments:BlogId:{blogId}";
 
-            await _redisRepository.ListRightPushAsync(commentBlogRedisKey, comment);
-
-            var commentBlogCountRedisKey = $"NewBlogger:CommentBlogCount:BlogId:{blogId}";
-
-            var value = _redisRepository.StringGet(commentBlogCountRedisKey);
-
-            if ((value + "").Length <= 0)
+            _redisRepository.HashSet(commentBlogRedisKey, new List<HashEntry>
             {
-                _redisRepository.StringSet(commentBlogCountRedisKey, 1);
-            }
-            else
-            {
-                _redisRepository.StringIncrement(commentBlogCountRedisKey);
-            }
+                new HashEntry(nameof(comment.Id),$"{comment.Id}"),
+
+                new HashEntry(nameof(comment.ReplyNickName),$"{comment.ReplyNickName}"),
+
+                new HashEntry(nameof(comment.ReplyEmailAddress),$"{comment.ReplyEmailAddress}"),
+
+                new HashEntry(nameof(comment.Content),$"{comment.Content}"),
+
+                new HashEntry(nameof(comment.BlogId),$"{comment.BlogId}"),
+
+                new HashEntry(nameof(comment.ReplyId),$"{comment.ReplyId}"),
+
+                new HashEntry(nameof(comment.AddTime),$"{comment.AddTime}")
+            }.ToArray());
+
+            var blogRedisKey = $"NewBlogger:Blogs:Id:{blogId}";
+
+            _redisRepository.HashIncrement(blogRedisKey, "CommentCount");
         }
     }
 }

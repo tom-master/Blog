@@ -83,7 +83,7 @@ namespace NewBlogger.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Reply()
+        public IActionResult Reply()
         {
 
             var nickName = Request.Form["name"];
@@ -96,7 +96,7 @@ namespace NewBlogger.Controllers
 
             var message = Request.Form["message"];
 
-            await _commentService.AddCommentAsync(nickName, email, blogId, message, replyId);
+             _commentService.AddComment(nickName, email, blogId, message, replyId);
 
             return Json(new { status = 1 });
         }

@@ -400,7 +400,7 @@ namespace NewBlogger.Repository.RedisImpl
             return Execute(db =>
             {
                 var values = db.HashKeys(key);
-                return ConvetList<TModel>(values);
+                return ConvetList<TModel>(values).ToList();
             });
         }
 
@@ -513,7 +513,7 @@ namespace NewBlogger.Repository.RedisImpl
         {
 
             var values = await Execute(db => db.HashKeysAsync(key));
-            return ConvetList<TModel>(values);
+            return ConvetList<TModel>(values).ToList();
         }
 
         #endregion 异步方法
@@ -546,7 +546,7 @@ namespace NewBlogger.Repository.RedisImpl
             return Execute(redis =>
             {
                 var values = redis.ListRange(key);
-                return ConvetList<TModel>(values);
+                return ConvetList<TModel>(values).ToList();
             });
         }
 
@@ -556,7 +556,7 @@ namespace NewBlogger.Repository.RedisImpl
             return Execute(redis =>
             {
                 var values = redis.ListRange(key, start, end);
-                return ConvetList<TModel>(values);
+                return ConvetList<TModel>(values).ToList();
             });
         }
 
@@ -648,9 +648,8 @@ namespace NewBlogger.Repository.RedisImpl
         /// <returns></returns>
         public virtual async Task<List<TModel>> ListRangeAsync<TModel>(String key)
         {
-
             var values = await Execute(redis => redis.ListRangeAsync(key));
-            return ConvetList<TModel>(values);
+            return ConvetList<TModel>(values).ToList();
         }
 
         /// <summary>
@@ -755,7 +754,7 @@ namespace NewBlogger.Repository.RedisImpl
             return Execute(redis =>
             {
                 var values = redis.SortedSetRangeByRank(key);
-                return ConvetList<TModel>(values);
+                return ConvetList<TModel>(values).ToList();
             });
         }
 
@@ -804,9 +803,8 @@ namespace NewBlogger.Repository.RedisImpl
         /// <returns></returns>
         public virtual async Task<List<TModel>> SortedSetRangeByRankAsync<TModel>(String key)
         {
-
             var values = await Execute(redis => redis.SortedSetRangeByRankAsync(key));
-            return ConvetList<TModel>(values);
+            return ConvetList<TModel>(values).ToList();
         }
 
         /// <summary>

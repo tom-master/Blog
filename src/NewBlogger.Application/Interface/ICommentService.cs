@@ -7,8 +7,8 @@ namespace NewBlogger.Application.Interface
 {
     public interface ICommentService
     {
-        IList<Comment> GetComments(String key, Int32 pageIndex, Int32 pageSize, out Int32 totalCount);
+        IList<Comment> GetComments(Guid blogId);
 
-        Task AddCommentAsync(String nickName, String emailAddress, Guid blogId, String content, Guid? replyId = default(Guid?));
+        void AddComment(String nickName, String emailAddress, Guid blogId, String content, Guid? replyId = default(Guid?));
     }
 }
