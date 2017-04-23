@@ -5,6 +5,9 @@
     "command": "dotnet",
     "isShellCommand": true,
     "args": [],
+    "options":{
+        "cwd":"${workspaceRoot}/NewBlogger"
+    },
     "tasks": [
         {
             "taskName": "build",

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
@@ -9,14 +10,18 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
   </PropertyGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\NewBlogger.Model\NewBlogger.Model.csproj" />
+    <ProjectReference Include="/home/haozifan/work/NewBlogger/NewBlogger/src/NewBlogger.Model/NewBlogger.Model.csproj"/>
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="mongodbservicecore" Version="1.0.5" />
-    <PackageReference Include="StackExchange.Redis" Version="1.2.1" />
-    <PackageReference Include="System.Linq.Queryable" Version="4.3.0" />
+    <PackageReference Include="StackExchange.Redis" Version="1.2.1"/>
+    <PackageReference Include="System.Linq.Queryable" Version="4.3.0"/>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.2"/>
+     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="1.1.1" />
   </ItemGroup>
 </Project>

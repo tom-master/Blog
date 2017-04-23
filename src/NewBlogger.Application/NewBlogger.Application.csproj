@@ -11,8 +11,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NewBlogger.Model\NewBlogger.Model.csproj" />
-    <ProjectReference Include="..\NewBlogger.Repository\NewBlogger.Repository.csproj" />
-    <ProjectReference Include="..\NewBlogger.Dto\NewBlogger.Dto.csproj" />
+    <ProjectReference Include="/home/haozifan/work/NewBlogger/NewBlogger/src/NewBlogger.Model/NewBlogger.Model.csproj" />
+    <ProjectReference Include="/home/haozifan/work/NewBlogger/NewBlogger/src/NewBlogger.Repository/NewBlogger.Repository.csproj" />
+    <ProjectReference Include="/home/haozifan/work/NewBlogger/NewBlogger/src/NewBlogger.Dto/NewBlogger.Dto.csproj" />
   </ItemGroup>
 </Project>
