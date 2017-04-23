@@ -14,7 +14,7 @@ namespace NewBlogger
                 .UseStartup<Startup>()
                 .Build();
 
-
+var a=0;
             host.Run();
         }
     }
