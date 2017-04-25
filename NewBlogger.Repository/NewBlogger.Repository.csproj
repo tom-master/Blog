@@ -11,7 +11,7 @@
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="/home/haozifan/work/NewBlogger/NewBlogger/src/NewBlogger.Model/NewBlogger.Model.csproj"/>
+    <ProjectReference Include="..\NewBlogger.Model\NewBlogger.Model.csproj"/>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="StackExchange.Redis" Version="1.2.1"/>

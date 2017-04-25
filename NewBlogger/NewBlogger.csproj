@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="/home/haozifan/work/NewBlogger/NewBlogger/src/NewBlogger.Application/NewBlogger.Application.csproj" />
+    <ProjectReference Include="..\NewBlogger.Application\NewBlogger.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>
