@@ -8,7 +8,7 @@
             "preLaunchTask": "build",
             "program": "${workspaceRoot}/NewBlogger/bin/Debug/netcoreapp1.0/NewBlogger.dll",
             "args": [],
-            "cwd": "${workspaceRoot}",
+            "cwd": "${workspaceRoot}/NewBlogger",
             "stopAtEntry": false,
             "console": "internalConsole"
         },
@@ -19,7 +19,7 @@
             "preLaunchTask": "build",
             "program": "${workspaceRoot}/NewBlogger/bin/Debug/netcoreapp1.0/NewBlogger.dll",
             "args": [],
-            "cwd": "${workspaceRoot}",
+            "cwd": "${workspaceRoot}/NewBlogger",
             "stopAtEntry": false,
             "launchBrowser": {
                 "enabled": true,

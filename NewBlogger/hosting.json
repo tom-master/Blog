@@ -1,0 +1,4 @@
+{
+    "server.urls":"http://*:12587",
+    "environment": "Development"
+}
