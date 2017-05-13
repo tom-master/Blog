@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace NewBlogger.Areas.AdminBlog.Controllers
 {
+  [Area("AdminBlog")]
   public class HomeController : Controller
   {
 
@@ -13,10 +14,10 @@ namespace NewBlogger.Areas.AdminBlog.Controllers
 
     }
 
+    
     public IActionResult Index()
     {
-      
-      return View();
+        return View();
     }
   }
 }
