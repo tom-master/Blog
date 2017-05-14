@@ -10,10 +10,10 @@ namespace NewBlogger.Application.Interface
     {
         IList<CategoryDto> GetCategorys();
 
-        Task AddCategoryAsync(String categoryName);
+        void AddCategory(String categoryName);
 
-        Task RemoveCategoryAsync(Guid categoryId);
+        void RemoveCategory(Guid categoryId);
 
-        Task ModifyCategoryAsync(Guid categoryId,String newCategoryName);
+        void ModifyCategory(Guid categoryId,String newCategoryName);
     }
 }

@@ -10,8 +10,8 @@ namespace NewBlogger.Application.Interface
 
         IList<TagDto> GetTags();
 
-        Task AddTagAsync(String tagName);
+        void AddTag(String tagName);
 
-        Task RemoveTagAsync(Guid tagId);
+        void RemoveTag(Guid tagId);
     }
 }

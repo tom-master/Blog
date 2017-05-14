@@ -31,21 +31,21 @@ namespace NewBlogger.Application
             }).ToList();
         }
 
-        public async Task AddTagAsync(String tagName)
+        public void AddTag(String tagName)
         {
             var tagRedisKey = "NewBlogger:Tags";
 
-            await _redisRepository.ListRightPushAsync(tagRedisKey, new Tag(tagName));
+            _redisRepository.ListRightPush(tagRedisKey, new Tag(tagName));
         }
 
 
-        public async Task RemoveTagAsync(Guid tagId)
+        public void RemoveTag(Guid tagId)
         {
             var categoryRedisKey = "NewBlogger:Tags";
 
             var category = _redisRepository.ListRange<Tag>(categoryRedisKey).FirstOrDefault(w => w.Id == tagId);
 
-            await _redisRepository.ListRemoveAsync(categoryRedisKey, category);
+            _redisRepository.ListRemove(categoryRedisKey, category);
         }
 
     }

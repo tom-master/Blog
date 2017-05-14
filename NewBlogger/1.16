@@ -1,8 +1,0 @@
-bower jquery-validation#>=1.16  cached https://github.com/jzaefferer/jquery-validation.git#1.16.0
-bower jquery-validation#>=1.16         validate 1.16.0 against https://github.com/jzaefferer/jquery-validation.git#>=1.16
-bower jquery-validation#*                cached https://github.com/jzaefferer/jquery-validation.git#1.16.0
-bower jquery-validation#*              validate 1.16.0 against https://github.com/jzaefferer/jquery-validation.git#*
-bower jquery-validation#>=1.16          install jquery-validation#1.16.0
-
-jquery-validation#1.16.0 wwwroot\lib\jquery-validation
-└── jquery#3.1.1

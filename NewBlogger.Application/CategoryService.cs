@@ -28,35 +28,35 @@ namespace NewBlogger.Application
 
             return _redisRepository.ListRange<Category>(categoryRedisKey).Select(s => new CategoryDto
             {
-                BlogCount =Int32.Parse(_redisRepository.StringGet(categoryBlogCountRedisKey + s.Id)), 
+                BlogCount = !String.IsNullOrEmpty(_redisRepository.StringGet(categoryBlogCountRedisKey + s.Id))?Int32.Parse(_redisRepository.StringGet(categoryBlogCountRedisKey + s.Id)):0,
                 Id = s.Id,
                 Name = s.Name
             }).ToList();
         }
 
-        public async Task AddCategoryAsync(String categoryName)
+        public void AddCategory(String categoryName)
         {
             var category = new Category(categoryName);
 
             var categoryRedisKey = "NewBlogger:Categorys";
 
-            await _redisRepository.ListRightPushAsync(categoryRedisKey, category);
+            _redisRepository.ListRightPush(categoryRedisKey, category);
         }
 
-        public async Task RemoveCategoryAsync(Guid categoryId)
+        public void RemoveCategory(Guid categoryId)
         {
             var categoryRedisKey = "NewBlogger:Categorys";
 
             var category = _redisRepository.ListRange<Category>(categoryRedisKey).FirstOrDefault(w => w.Id == categoryId);
 
-            await _redisRepository.ListRemoveAsync(categoryRedisKey, category);
+            _redisRepository.ListRemove(categoryRedisKey, category);
         }
 
-        public async Task ModifyCategoryAsync(Guid categoryId, String newCategoryName)
+        public void ModifyCategory(Guid categoryId, String newCategoryName)
         {
-            await RemoveCategoryAsync(categoryId);
+             RemoveCategory(categoryId);
 
-            await AddCategoryAsync(newCategoryName);
+             AddCategory(newCategoryName);
         }
     }
 }
