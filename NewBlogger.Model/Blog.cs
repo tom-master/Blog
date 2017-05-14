@@ -7,6 +7,8 @@ namespace NewBlogger.Model
 {
     public partial class Blog : ModelBase
     {
+        public Blog(){}
+
         public Blog(String title, String content, Guid categoryId, Guid[] tags)
         {
             if ((title + "").Length <= 0)

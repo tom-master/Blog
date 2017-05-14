@@ -7,7 +7,7 @@ namespace NewBlogger.Model
 {
     public class Category : ModelBase
     {
-
+        public Category(){}
         public Category(String name)
         {
             if ((name + "").Length <= 0)

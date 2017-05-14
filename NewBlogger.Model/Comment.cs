@@ -7,6 +7,7 @@ namespace NewBlogger.Model
 {
     public class Comment : ModelBase
     {
+        public Comment(){}
 
         public Comment(String replyNickName, String replyEmailAddress, Guid blogId, String content, Guid? replyId = default(Guid?))
         {

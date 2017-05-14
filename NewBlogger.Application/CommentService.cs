@@ -23,16 +23,7 @@ namespace NewBlogger.Application
         {
             var commentBlogRedisKey = $"NewBlogger:Comments:BlogId:{blogId}";
 
-            return _redisRepository.HashGet<Comment>(commentBlogRedisKey, new List<RedisValue>
-            {
-                "Id",
-                "ReplyNickName",
-                "ReplyEmailAddress",
-                "Content",
-                "BlogId",
-                "ReplyId",
-                "AddTime"
-            }.ToArray()).Select(comment => new CommentDto
+            return _redisRepository.HashGet<Comment>(commentBlogRedisKey).Select(comment => new CommentDto
             {
                 Id = comment.Id,
                 ReplyNickName = comment.ReplyNickName,

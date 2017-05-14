@@ -7,6 +7,7 @@ namespace NewBlogger.Model
     public class Tag : ModelBase
     {
 
+        public Tag(){}
 
         public Tag(String name)
         {

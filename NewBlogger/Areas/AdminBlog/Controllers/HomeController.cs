@@ -10,7 +10,7 @@ namespace NewBlogger.Areas.AdminBlog.Controllers
     public class HomeController : Controller
     {
 
-      private readonly ICategoryService _categoryService;
+        private readonly ICategoryService _categoryService;
 
         private readonly IBlogService _blogService;
 
@@ -32,19 +32,20 @@ namespace NewBlogger.Areas.AdminBlog.Controllers
         {
             ViewData["Tags"] = _tagService.GetTags();
 
-            ViewData["Categorys"] = _categoryService.GetCategorys();           
+            ViewData["Categorys"] = _categoryService.GetCategorys();
 
             return View();
         }
 
-
+        [HttpPost]
         public IActionResult AddCategory(String categoryName)
         {
-             _categoryService.AddCategory(categoryName);
+            _categoryService.AddCategory(categoryName);
 
             return Json(new { });
         }
 
+        [HttpPost]
         public IActionResult AddBlog(String title, String content, Guid categoryId, Guid tagId)
         {
             _blogService.AddNewBlog(title, content, categoryId, tagId);
@@ -52,11 +53,22 @@ namespace NewBlogger.Areas.AdminBlog.Controllers
             return Json(new { });
         }
 
+        [HttpPost]
         public IActionResult AddTag(String tagName)
         {
-             _tagService.AddTag(tagName);
+            _tagService.AddTag(tagName);
 
             return Json(new { });
+        }
+
+        [HttpGet]
+        public IActionResult GetBlogs(Int32 pageIndex, Int32 pageSize)
+        {
+            var totalCount = 0;
+
+            var blogs = _blogService.GetBlogs(null,pageIndex, pageSize, out totalCount);
+
+            return Json(new { blogs = blogs, totalCount = totalCount });
         }
     }
 }

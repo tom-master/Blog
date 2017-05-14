@@ -79,11 +79,90 @@
                 </table>
             </div>
         </div>
+        <div style="border-color:red;border-style:dashed;clear:both;width:50%;">
+           <div style="margin-top:10px;margin-left:10px;">
+                <i>标题：</i><input type="text" value="" id="title" /><br/>
+                <i>内容：</i><input type="text" value="" id="content" /><br/>
+                <i>目录Id：</i>
+                    <select id="categoryselect">
+                        @if(categorys.Any())
+                        {
+                            foreach(var category in categorys)
+                            {
+                                <option data-categoryid="@category.Id">@category.Name</option>            
+                            }
+                        }else
+                        {
+                            <option>暂无目录Id</option>
+                        }
+                    </select>
+                <br/>
+                <i>标签Id：</i>
+                    <select id="tagselect">
+                        @if(tags.Any())
+                        {
+                            foreach(var tag in tags)
+                            {
+                                <option data-tagid="@tag.Id">@tag.Name</option>
+                            }
+                        }else
+                        {
+                                <option>暂无标签Id</option>
+                        }
+                    </select>
+                <br/>
+                <button type="button" id="addBlog" onclick="addBlog();">添加文章</button>
+           </div>
+            
+            <table border="1" style="width:100%;margin-top:10px;">
+                <head>
+                    <tr>
+                        <td>标题</td>
+                        <td>查看数</td>
+                        <td>回复数</td>
+                        <td>添加时间</td>
+                        <td>操作</td>
+                    </tr>
+                </head>
+                <tbody id="blogs">
+                                    
+                </tbody>
+            </table>
+        </div>
     </body>
 </html>
 <script src="@Url.Content("~/js/jquery.min.js")"></script>
+<script src="@Url.Content("~/js/handlebars-v4.0.5.js")"></script>
+<script id="blogs-template" type="text/x-handlebars-template">
+    {{#if blogs}}
+        {{#each blogs}}
+            <tr>
+                <td>{{Title}}</td>
+                <td>{{ViewCount}}</td>
+                <td>{{CommentCount}}</td>
+                <td>{{AddTime}}</td>
+                <td>
+                    <a href="javascript:void(0);">删除</a>
+                    <a href="javascript:void(0);">修改</a>
+                </td>
+            </tr>
+        {{/each}}
+    {{else}}
+        <tr>
+            <td colspan="5" style="text-align:center">
+                暂无文章
+            </td>
+        </tr>
+    {{/if}}
+
+   
+</script>
 <script>
     $(function(){
+
+        //获取博客列表
+        GetBlog();
+
         //添加标签
         $('#addTag').on('click',function(){
                var tagName= $('#tagName').val();
@@ -101,7 +180,41 @@
         });
     })
 
+
+    function GetBlog(){
+        $.get('@Url.Action("GetBlogs","Home")',
+        {
+            pageIndex:1,
+            pageSize:10
+        },function(responseText){
+            var tableTemplate = Handlebars.compile($('#blogs-template').html());
+            $('#blogs').html(tableTemplate(responseText));
+        })
+    }
+
+    //删除标签
     function removeTag(tagId){
         
     }
+
+    //删除类别
+    function removeCategory(categoryId){
+
+    }
+
+    function addBlog() {
+        
+        var title = $('#title').val();
+
+        var content = $('#content').val();
+
+        var categoryId =  $('#categoryselect').find('option:selected').attr('data-categoryid');
+
+        var tagId = $('#tagselect').find('option:selected').attr('data-tagid');
+
+        $.post('@Url.Action("AddBlog","Home")', { title:title, content:content, categoryId:categoryId,tagId:tagId }, function(responseText) {
+
+        });
+    }
+
 </script>

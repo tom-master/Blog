@@ -42,17 +42,7 @@ namespace NewBlogger.Application
         {
             var blogRedisKey = $"NewBlogger:Blogs:Id:{blogId}";
 
-            var blog = _redisRepository.HashGet<Blog>(blogRedisKey, new List<RedisValue>
-            {
-               "Id",
-               "Title",
-               "Content",
-               "CategoryId",
-               "AddTime",
-               "Tags",
-               "ViewCount",
-               "CommentCount"
-            }.ToArray()).FirstOrDefault();
+            var blog = _redisRepository.HashGet<Blog>(blogRedisKey).FirstOrDefault();
 
             var categoryRedisKey = "NewBlogger:Categorys";
 

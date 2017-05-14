@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using NewBlogger.Repository.RedisImpl.InternalRedisHelper;
 using Newtonsoft.Json;
@@ -351,14 +352,14 @@ namespace NewBlogger.Repository.RedisImpl
         /// </summary>
         /// <typeparam name="TModel"></typeparam>
         /// <param name="key"></param>
-        /// <param name="redisValues"></param>
         /// <returns></returns>
-        public virtual IList<TModel> HashGet<TModel>(String key, RedisValue[] redisValues)
+        public virtual IList<TModel> HashGet<TModel>(String key)
         {
             return Execute(db =>
              {
-                 RedisValue[] value = db.HashGet(key, redisValues);
-                 return ConvetList<TModel>(value);
+                 HashEntry[] value = db.HashGetAll(key);
+
+                 return new List<TModel>();
              });
         }
 
@@ -1000,7 +1001,6 @@ namespace NewBlogger.Repository.RedisImpl
             }
             return result;
         }
-
         private RedisKey[] ConvertRedisKeys(List<String> redisKeys)
         {
             return redisKeys.Select(redisKey => (RedisKey)redisKey).ToArray();

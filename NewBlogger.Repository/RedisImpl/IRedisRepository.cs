@@ -219,7 +219,7 @@ namespace NewBlogger.Repository.RedisImpl
         /// <param name="key"></param>
         /// <param name="redisValues"></param>
         /// <returns></returns>
-        IList<TModel> HashGet<TModel>(String key, RedisValue[] redisValues);
+        IList<TModel> HashGet<TModel>(String key);
 
         /// <summary>
         /// 为数字增长val
