@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using NewBlogger.Model;
 using NewBlogger.Repository.RedisImpl.InternalRedisHelper;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using StackExchange.Redis;
 
 namespace NewBlogger.Repository.RedisImpl
@@ -339,7 +342,6 @@ namespace NewBlogger.Repository.RedisImpl
         /// <returns></returns>
         public virtual TModel HashGet<TModel>(String key, String dataKey)
         {
-
             return Execute(db =>
             {
                 String value = db.HashGet(key, dataKey);
@@ -359,7 +361,46 @@ namespace NewBlogger.Repository.RedisImpl
              {
                  HashEntry[] value = db.HashGetAll(key);
 
-                 return new List<TModel>();
+                 var modelInstance = Activator.CreateInstance(typeof(TModel));
+
+                 var modelPropertys = modelInstance.GetType().GetProperties();
+
+                 foreach (var propertyInfo in modelPropertys)
+                 {
+                    var hashEntry= value.FirstOrDefault(w=>w.Name==propertyInfo.Name);
+                    
+                    if(hashEntry.Name.IsNull)
+                    {
+                        continue;
+                    }
+
+                    if(propertyInfo.PropertyType==typeof(DateTime))
+                    {
+                        propertyInfo.SetValue(modelInstance,DateTime.Parse(hashEntry.Value.ToString()));
+                    }
+                    else if(propertyInfo.PropertyType==typeof(Guid))
+                    {
+                        propertyInfo.SetValue(modelInstance,Guid.Parse(hashEntry.Value.ToString()));
+                    }
+                    else if(propertyInfo.PropertyType==typeof(Guid[]))
+                    {
+                        Guid[] guids= JsonConvert.DeserializeObject<Guid[]>(hashEntry.Value.ToString());
+                        propertyInfo.SetValue(modelInstance,guids);
+                    }
+                    else if(propertyInfo.PropertyType==typeof(Int32))
+                    {
+                        propertyInfo.SetValue(modelInstance,Int32.Parse(hashEntry.Value.ToString()));
+                    }
+                    else 
+                    {
+                        propertyInfo.SetValue(modelInstance,hashEntry.Value.ToString());
+                    }
+                 }
+
+                 return new List<TModel>
+                 {
+                     ((TModel)modelInstance)
+                 };
              });
         }
 
@@ -988,7 +1029,10 @@ namespace NewBlogger.Repository.RedisImpl
             {
                 return default(TModel);
             }
-            return JsonConvert.DeserializeObject<TModel>(value);
+            return JsonConvert.DeserializeObject<TModel>(value,new JsonSerializerSettings
+            {
+                ContractResolver=new PrivateSetterContractResolver()
+            });
         }
 
         private IList<TModel> ConvetList<TModel>(RedisValue[] values)

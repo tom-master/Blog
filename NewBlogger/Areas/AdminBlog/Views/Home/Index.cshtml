@@ -8,7 +8,8 @@
 <html>
     <head>
        <style>
-            .divfloat{
+            .divfloat
+            {
                 float:left
             }
        </style>
@@ -137,10 +138,10 @@
     {{#if blogs}}
         {{#each blogs}}
             <tr>
-                <td>{{Title}}</td>
-                <td>{{ViewCount}}</td>
-                <td>{{CommentCount}}</td>
-                <td>{{AddTime}}</td>
+                <td>{{title}}</td>
+                <td>{{viewCount}}</td>
+                <td>{{commentCount}}</td>
+                <td>{{addTime}}</td>
                 <td>
                     <a href="javascript:void(0);">删除</a>
                     <a href="javascript:void(0);">修改</a>
@@ -186,7 +187,7 @@
         {
             pageIndex:1,
             pageSize:10
-        },function(responseText){
+        },function(responseText){      
             var tableTemplate = Handlebars.compile($('#blogs-template').html());
             $('#blogs').html(tableTemplate(responseText));
         })
