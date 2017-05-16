@@ -10,6 +10,6 @@ namespace NewBlogger.Application.Interface
     {
         IList<CommentDto> GetComments(Guid blogId);
 
-        void AddComment(String nickName, String emailAddress, Guid blogId, String content, Guid? replyId = default(Guid?));
+        void AddComment(String nickName, String emailAddress, Guid blogId, String content, Guid replyId = default(Guid));
     }
 }

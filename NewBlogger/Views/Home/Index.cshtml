@@ -1,9 +1,4 @@
-﻿
-@{
-    ViewData["Title"] = "Home Page";
-}
- 
-<div id="blogs">
+﻿<div id="blogs">
 
 </div>
 <div class="pagination pagination-centered" id="pagination"></div>
@@ -48,7 +43,7 @@
             {
                 pageIndex: current_page === 0 ? 1 : current_page + 1,
                 pageSize: 5,
-                categoryId: '@Context.Request.Query["categoryId"].FirstOrDefault()'
+                categoryId: '@(Context.Request.Query["categoryId"].FirstOrDefault()==null?Guid.Empty.ToString():Context.Request.Query["categoryId"].FirstOrDefault())'
             }, function (responseText) {
                 var tableTemplate = Handlebars.compile($("#blogs-template").html());
                 $('#blogs').html(tableTemplate(responseText));

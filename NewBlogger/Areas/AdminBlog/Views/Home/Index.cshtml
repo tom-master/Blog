@@ -85,7 +85,7 @@
                 <i>标题：</i><input type="text" value="" id="title" /><br/>
                 <i>内容：</i><input type="text" value="" id="content" /><br/>
                 <i>目录Id：</i>
-                    <select id="categoryselect">
+                    <select id="categoryselect" onchange="javascript:GetBlogs()">
                         @if(categorys.Any())
                         {
                             foreach(var category in categorys)
@@ -162,7 +162,7 @@
     $(function(){
 
         //获取博客列表
-        GetBlog();
+        GetBlogs();
 
         //添加标签
         $('#addTag').on('click',function(){
@@ -182,9 +182,10 @@
     })
 
 
-    function GetBlog(){
+    function GetBlogs(){
         $.get('@Url.Action("GetBlogs","Home")',
         {
+            categoryId:$('#categoryselect').find('option:selected').attr('data-categoryid'),
             pageIndex:1,
             pageSize:10
         },function(responseText){      
@@ -214,7 +215,7 @@
         var tagId = $('#tagselect').find('option:selected').attr('data-tagid');
 
         $.post('@Url.Action("AddBlog","Home")', { title:title, content:content, categoryId:categoryId,tagId:tagId }, function(responseText) {
-
+                location.reload();
         });
     }
 

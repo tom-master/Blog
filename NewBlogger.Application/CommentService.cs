@@ -23,7 +23,7 @@ namespace NewBlogger.Application
         {
             var commentBlogRedisKey = $"NewBlogger:Comments:BlogId:{blogId}";
 
-            return _redisRepository.HashGet<Comment>(commentBlogRedisKey).Select(comment => new CommentDto
+            return _redisRepository.ListRange<Comment>(commentBlogRedisKey,0,-1).Select(comment => new CommentDto
             {
                 Id = comment.Id,
                 ReplyNickName = comment.ReplyNickName,
@@ -34,28 +34,13 @@ namespace NewBlogger.Application
             }).ToList();
         }
 
-        public void AddComment(String nickName, String emailAddress, Guid blogId, String content, Guid? replyId = default(Guid?))
+        public void AddComment(String nickName, String emailAddress, Guid blogId, String content, Guid replyId = default(Guid))
         {
             var comment = new Comment(nickName, emailAddress, blogId, content, replyId);
 
             var commentBlogRedisKey = $"NewBlogger:Comments:BlogId:{blogId}";
 
-            _redisRepository.HashSet(commentBlogRedisKey, new List<HashEntry>
-            {
-                new HashEntry(nameof(comment.Id),$"{comment.Id}"),
-
-                new HashEntry(nameof(comment.ReplyNickName),$"{comment.ReplyNickName}"),
-
-                new HashEntry(nameof(comment.ReplyEmailAddress),$"{comment.ReplyEmailAddress}"),
-
-                new HashEntry(nameof(comment.Content),$"{comment.Content}"),
-
-                new HashEntry(nameof(comment.BlogId),$"{comment.BlogId}"),
-
-                new HashEntry(nameof(comment.ReplyId),$"{comment.ReplyId}"),
-
-                new HashEntry(nameof(comment.AddTime),$"{comment.AddTime}")
-            }.ToArray());
+            _redisRepository.ListRightPush(commentBlogRedisKey,comment);
 
             var blogRedisKey = $"NewBlogger:Blogs:Id:{blogId}";
 

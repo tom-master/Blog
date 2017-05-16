@@ -33,6 +33,8 @@ namespace NewBlogger.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            ViewBag.Title="初代目黑影";
+
             return View();
         }
 
@@ -41,7 +43,11 @@ namespace NewBlogger.Controllers
         {
             _blogService.AddViewCount(blogId);
 
-            return View(_blogService.GetBlog(blogId));
+            var blog = _blogService.GetBlog(blogId);
+
+            ViewBag.Title=blog.Title;
+
+            return View(blog);
         }
 
         #endregion
@@ -65,7 +71,7 @@ namespace NewBlogger.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult GetBlogs(Int32 pageIndex, Int32 pageSize, Guid? categoryId = default(Guid?))
+        public IActionResult GetBlogs(Int32 pageIndex, Int32 pageSize, Guid categoryId = default(Guid))
         {
             Int32 totalCount;
 
@@ -92,7 +98,7 @@ namespace NewBlogger.Controllers
 
             var blogId = Guid.Parse(Request.Form["blogId"]);
 
-            var replyId = (Request.Form["replyId"] + "").Length <= 0 ? null : (Guid?)Guid.Parse(Request.Form["replyId"]);
+            var replyId = (Request.Form["replyId"] + "").Length <= 0 ? Guid.Empty : Guid.Parse(Request.Form["replyId"]);
 
             var message = Request.Form["message"];
 

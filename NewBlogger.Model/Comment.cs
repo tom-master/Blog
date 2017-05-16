@@ -9,7 +9,7 @@ namespace NewBlogger.Model
     {
         public Comment(){}
 
-        public Comment(String replyNickName, String replyEmailAddress, Guid blogId, String content, Guid? replyId = default(Guid?))
+        public Comment(String replyNickName, String replyEmailAddress, Guid blogId, String content, Guid replyId = default(Guid))
         {
 
             if ((replyNickName + "").Length <= 0)
@@ -56,7 +56,7 @@ namespace NewBlogger.Model
 
         public String Content { get; private set; }
 
-        public Guid? ReplyId { get; private set; }
+        public Guid ReplyId { get; private set; }
 
     }
 }

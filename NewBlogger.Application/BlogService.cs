@@ -24,17 +24,17 @@ namespace NewBlogger.Application
             _commentService = commentService;
         }
 
-        public IList<BlogDto> GetBlogs(Guid? categoryId, Int32 pageIndex, Int32 pageSize, out Int32 totalCount)
+        public IList<BlogDto> GetBlogs(Guid categoryId, Int32 pageIndex, Int32 pageSize, out Int32 totalCount)
         {
             Int32 internalStart = (pageIndex - 1) * pageSize, internalEnd = (pageSize + internalStart) - 1;
 
-            var blogIdsRedisKey = "NewBlogger:BlogIds:Id";
+            var blogIdsRedisKey = $"NewBlogger:BlogIds:Id";
 
             var blogIds = _redisRepository.ListRange<Guid>(blogIdsRedisKey, internalStart, internalEnd);
 
             totalCount = (Int32)_redisRepository.ListLength(blogIdsRedisKey);
 
-            return blogIds.Select(GetBlog).ToList();
+            return blogIds.Select(GetBlog).Where(w=>categoryId==Guid.Empty?true:w.CategoryId==categoryId).ToList();
 
         }
 
@@ -108,9 +108,20 @@ namespace NewBlogger.Application
                 new HashEntry(nameof(blog.CommentCount),0)
             }.ToArray());
 
-            var blogIdsRedisKey = "NewBlogger:BlogIds:Id";
+            var blogIdsRedisKey = $"NewBlogger:BlogIds:Id";
 
             _redisRepository.ListRightPush(blogIdsRedisKey, blog.Id);
+
+            var categoryBlogCountRedisKey = $"NewBlogger:CategoryBlogCount:Category:{categoryId}";
+
+            if(!_redisRepository.KeyExists(categoryBlogCountRedisKey))
+            {
+                _redisRepository.StringSet(categoryBlogCountRedisKey,1);
+            }
+            else
+            {
+                _redisRepository.StringIncrement(categoryBlogCountRedisKey);
+            }
         }
     }
 }

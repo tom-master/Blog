@@ -62,11 +62,11 @@ namespace NewBlogger.Areas.AdminBlog.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetBlogs(Int32 pageIndex, Int32 pageSize)
+        public IActionResult GetBlogs(Guid categoryId,Int32 pageIndex, Int32 pageSize)
         {
             var totalCount = 0;
 
-            var blogs = _blogService.GetBlogs(null,pageIndex, pageSize, out totalCount);
+            var blogs = _blogService.GetBlogs(categoryId,pageIndex, pageSize, out totalCount);
 
             return Json(new { blogs = blogs, totalCount = totalCount });
         }

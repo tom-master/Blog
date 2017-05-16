@@ -17,7 +17,7 @@ namespace NewBlogger.Model
 
             Name = name;
 
-            Id = Guid.Parse("f7e371e3-9ad2-4ef9-9c6c-559409b67840");
+            Id = Guid.NewGuid();
 
             AddTime=DateTime.Now;
         }

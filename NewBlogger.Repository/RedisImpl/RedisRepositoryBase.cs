@@ -361,6 +361,11 @@ namespace NewBlogger.Repository.RedisImpl
              {
                  HashEntry[] value = db.HashGetAll(key);
 
+                 if(!value.Any())
+                 {
+                    return new List<TModel>();
+                 }
+
                  var modelInstance = Activator.CreateInstance(typeof(TModel));
 
                  var modelPropertys = modelInstance.GetType().GetProperties();
