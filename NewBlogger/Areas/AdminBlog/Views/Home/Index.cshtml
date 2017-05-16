@@ -166,10 +166,10 @@
 
         //添加标签
         $('#addTag').on('click',function(){
-               var tagName= $('#tagName').val();
-               $.post('@Url.Action("AddTag","Home")',{tagName:tagName},function(){
-                    location.reload();
-               })
+            var tagName= $('#tagName').val();
+            $.post('@Url.Action("AddTag","Home")',{tagName:tagName},function(){
+                location.reload();
+            })
         });
 
         //添加类别
@@ -210,12 +210,16 @@
 
     //删除标签
     function removeTag(tagId){
-        
+        $.post('@Url.Action("RemoveTag","Home")',{tagId:tagId},function(responseText){
+            location.reload();
+        })
     }
 
     //删除类别
     function removeCategory(categoryId){
-
+        $.post('@Url.Action("RemoveCategory","Home")',{categoryId:categoryId},function(responseText){
+            location.reload();
+        })
     }
 
     //删除文章

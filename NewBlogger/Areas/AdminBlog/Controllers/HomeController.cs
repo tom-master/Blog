@@ -66,9 +66,31 @@ namespace NewBlogger.Areas.AdminBlog.Controllers
         {
             var totalCount = 0;
 
-            var blogs = _blogService.GetBlogs(Guid.Empty,pageIndex, pageSize, out totalCount);
+            var blogs = _blogService.GetBlogs(Guid.Empty, pageIndex, pageSize, out totalCount);
 
             return Json(new { blogs = blogs, totalCount = totalCount });
+        }
+
+        [HttpPost]
+        public IActionResult RemoveTag(Guid tagId)
+        {
+            _tagService.RemoveTag(tagId);
+            
+            return Json(new { });
+        }
+
+        [HttpPost]
+        public IActionResult RemoveCategory(Guid categoryId)
+        {
+            _categoryService.RemoveCategory(categoryId);
+
+            return Json(new { });
+        }
+
+        [HttpPost]
+        public IActionResult RemoveBlog(Guid blogId)
+        {
+            return Json(new {});
         }
     }
 }
