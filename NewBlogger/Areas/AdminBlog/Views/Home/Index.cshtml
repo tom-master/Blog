@@ -179,13 +179,27 @@
                 location.reload();
             })
         });
+
+        //添加类别
+        $('#addBlog').on('click',function(){
+            var title = $('#title').val();
+
+            var content = $('#content').val();
+
+            var categoryId =  $('#categoryselect').find('option:selected').attr('data-categoryid');
+
+            var tagId = $('#tagselect').find('option:selected').attr('data-tagid');
+
+            $.post('@Url.Action("AddBlog","Home")', { title:title, content:content, categoryId:categoryId,tagId:tagId }, function(responseText) {
+                    location.reload();
+            });            
+        })
     })
 
 
     function GetBlogs(){
         $.get('@Url.Action("GetBlogs","Home")',
         {
-            categoryId:$('#categoryselect').find('option:selected').attr('data-categoryid'),
             pageIndex:1,
             pageSize:10
         },function(responseText){      
@@ -204,19 +218,8 @@
 
     }
 
-    function addBlog() {
+    //删除文章
+    function removeBlog(blogId){
         
-        var title = $('#title').val();
-
-        var content = $('#content').val();
-
-        var categoryId =  $('#categoryselect').find('option:selected').attr('data-categoryid');
-
-        var tagId = $('#tagselect').find('option:selected').attr('data-tagid');
-
-        $.post('@Url.Action("AddBlog","Home")', { title:title, content:content, categoryId:categoryId,tagId:tagId }, function(responseText) {
-                location.reload();
-        });
     }
-
 </script>
