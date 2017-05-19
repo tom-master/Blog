@@ -27,7 +27,10 @@ namespace NewBlogger.Areas.AdminBlog.Controllers
         }
 
 
-        // GET: /<controller>/
+        /// <summary>
+        /// 后台管理首页
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             ViewData["Tags"] = _tagService.GetTags();
@@ -37,6 +40,12 @@ namespace NewBlogger.Areas.AdminBlog.Controllers
             return View();
         }
 
+
+        /// <summary>
+        /// 添加分类
+        /// </summary>
+        /// <param name="categoryName"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult AddCategory(String categoryName)
         {
@@ -45,6 +54,15 @@ namespace NewBlogger.Areas.AdminBlog.Controllers
             return Json(new { });
         }
 
+
+        /// <summary>
+        /// 添加文章
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="content"></param>
+        /// <param name="categoryId"></param>
+        /// <param name="tagId"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult AddBlog(String title, String content, Guid categoryId, Guid tagId)
         {
@@ -53,6 +71,11 @@ namespace NewBlogger.Areas.AdminBlog.Controllers
             return Json(new { });
         }
 
+        /// <summary>
+        /// 添加标签
+        /// </summary>
+        /// <param name="tagName"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult AddTag(String tagName)
         {
@@ -61,6 +84,12 @@ namespace NewBlogger.Areas.AdminBlog.Controllers
             return Json(new { });
         }
 
+        /// <summary>
+        /// 获取博客列表
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult GetBlogs(Int32 pageIndex, Int32 pageSize)
         {
@@ -71,6 +100,11 @@ namespace NewBlogger.Areas.AdminBlog.Controllers
             return Json(new { blogs = blogs, totalCount = totalCount });
         }
 
+        /// <summary>
+        /// 移除标签
+        /// </summary>
+        /// <param name="tagId"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult RemoveTag(Guid tagId)
         {
@@ -79,6 +113,12 @@ namespace NewBlogger.Areas.AdminBlog.Controllers
             return Json(new { });
         }
 
+
+        /// <summary>
+        /// 移除分类
+        /// </summary>
+        /// <param name="categoryId"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult RemoveCategory(Guid categoryId)
         {
@@ -87,6 +127,11 @@ namespace NewBlogger.Areas.AdminBlog.Controllers
             return Json(new { });
         }
 
+        /// <summary>
+        /// 移除文章
+        /// </summary>
+        /// <param name="blogId"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult RemoveBlog(Guid blogId)
         {
