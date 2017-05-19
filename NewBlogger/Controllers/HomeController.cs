@@ -30,6 +30,10 @@ namespace NewBlogger.Controllers
 
         #region pages
 
+        /// <summary>
+        /// 博客首页
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Index()
         {
@@ -38,6 +42,11 @@ namespace NewBlogger.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 博客详情页
+        /// </summary>
+        /// <param name="blogId"></param>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult BlogDetail(Guid blogId = default(Guid))
         {
@@ -98,8 +107,6 @@ namespace NewBlogger.Controllers
         public IActionResult Reply()
         {
 
-
-
             if (String.IsNullOrEmpty(Request.Form["name"]))
             {
                 throw new ArgumentNullException("name");
@@ -140,6 +147,10 @@ namespace NewBlogger.Controllers
             return Json(new { status = 1 });
         }
 
+        /// <summary>
+        /// 文章回复上传图片
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult UploadImage()
         {
