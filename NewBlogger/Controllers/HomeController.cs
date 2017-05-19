@@ -41,6 +41,12 @@ namespace NewBlogger.Controllers
         [HttpGet]
         public IActionResult BlogDetail(Guid blogId)
         {
+
+            if (blogId==Guid.Empty)
+            {
+                throw new ArgumentNullException($"{nameof(blogId)}");
+            }
+
             _blogService.AddViewCount(blogId);
 
             var blog = _blogService.GetBlog(blogId);

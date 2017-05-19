@@ -72,7 +72,7 @@ namespace NewBlogger.Areas.AdminBlog.Controllers
             /// <param name="tagId"></param>
             /// <returns></returns>
             [HttpPost]
-            public IActionResult AddBlog(String title, String content, Guid categoryId, Guid tagId)
+            public IActionResult AddBlog(String title, String content, Guid categoryId=default(Guid), Guid tagId=default(Guid))
             {
                 if (String.IsNullOrEmpty(title))
                 {
@@ -144,7 +144,7 @@ namespace NewBlogger.Areas.AdminBlog.Controllers
             /// <param name="tagId"></param>
             /// <returns></returns>
             [HttpPost]
-            public IActionResult RemoveTag(Guid tagId)
+            public IActionResult RemoveTag(Guid tagId=default(Guid))
             {
                 if (tagId==Guid.Empty)
                 {
@@ -163,7 +163,7 @@ namespace NewBlogger.Areas.AdminBlog.Controllers
             /// <param name="categoryId"></param>
             /// <returns></returns>
             [HttpPost]
-            public IActionResult RemoveCategory(Guid categoryId)
+            public IActionResult RemoveCategory(Guid categoryId=default(Guid))
             {
                 if (categoryId==Guid.Empty)
                 {
@@ -181,7 +181,7 @@ namespace NewBlogger.Areas.AdminBlog.Controllers
             /// <param name="blogId"></param>
             /// <returns></returns>
             [HttpPost]
-            public IActionResult RemoveBlog(Guid blogId)
+            public IActionResult RemoveBlog(Guid blogId=default(Guid))
             {
                 if (blogId==Guid.Empty)
                 {
