@@ -52,6 +52,11 @@ namespace NewBlogger.Areas.AdminBlog.Controllers
             [HttpPost]
             public IActionResult AddCategory(String categoryName)
             {
+                if (String.IsNullOrEmpty(categoryName))
+                {
+                    throw new ArgumentNullException($"{nameof(categoryName)}");
+                }
+
                 _categoryService.AddCategory(categoryName);
 
                 return Json(new { });
@@ -69,6 +74,26 @@ namespace NewBlogger.Areas.AdminBlog.Controllers
             [HttpPost]
             public IActionResult AddBlog(String title, String content, Guid categoryId, Guid tagId)
             {
+                if (String.IsNullOrEmpty(title))
+                {
+                    throw new ArgumentNullException($"{nameof(title)}");
+                }
+
+                if (String.IsNullOrEmpty(content))
+                {
+                    throw new ArgumentNullException($"{nameof(content)}");
+                }
+
+                if (categoryId==Guid.Empty)
+                {
+                    throw new ArgumentNullException($"{nameof(categoryId)}");
+                }
+
+                if (tagId==Guid.Empty)
+                {
+                    throw new ArgumentNullException($"{nameof(tagId)}");
+                }
+
                 _blogService.AddNewBlog(title, content, categoryId, tagId);
 
                 return Json(new { });
@@ -82,6 +107,11 @@ namespace NewBlogger.Areas.AdminBlog.Controllers
             [HttpPost]
             public IActionResult AddTag(String tagName)
             {
+                if (String.IsNullOrEmpty(tagName))
+                {
+                    throw new ArgumentNullException($"{nameof(tagName)}");
+                }
+
                 _tagService.AddTag(tagName);
 
                 return Json(new { });
@@ -116,6 +146,11 @@ namespace NewBlogger.Areas.AdminBlog.Controllers
             [HttpPost]
             public IActionResult RemoveTag(Guid tagId)
             {
+                if (tagId==Guid.Empty)
+                {
+                    throw new ArgumentNullException($"{nameof(tagId)}");
+                }
+
                 _tagService.RemoveTag(tagId);
                 
                 return Json(new { });
@@ -130,6 +165,11 @@ namespace NewBlogger.Areas.AdminBlog.Controllers
             [HttpPost]
             public IActionResult RemoveCategory(Guid categoryId)
             {
+                if (categoryId==Guid.Empty)
+                {
+                    throw new ArgumentNullException($"{nameof(categoryId)}");
+                }
+
                 _categoryService.RemoveCategory(categoryId);
 
                 return Json(new { });
@@ -143,6 +183,11 @@ namespace NewBlogger.Areas.AdminBlog.Controllers
             [HttpPost]
             public IActionResult RemoveBlog(Guid blogId)
             {
+                if (blogId==Guid.Empty)
+                {
+                    throw new ArgumentNullException($"{nameof(blogId)}");
+                }
+
                 return Json(new {});
             }
         #endregion
