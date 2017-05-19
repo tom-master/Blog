@@ -33,16 +33,16 @@ namespace NewBlogger.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            ViewBag.Title="初代目黑影";
+            ViewBag.Title = "初代目黑影";
 
             return View();
         }
 
         [HttpGet]
-        public IActionResult BlogDetail(Guid blogId)
+        public IActionResult BlogDetail(Guid blogId = default(Guid))
         {
 
-            if (blogId==Guid.Empty)
+            if (blogId == Guid.Empty)
             {
                 throw new ArgumentNullException($"{nameof(blogId)}");
             }
@@ -51,7 +51,7 @@ namespace NewBlogger.Controllers
 
             var blog = _blogService.GetBlog(blogId);
 
-            ViewBag.Title=blog.Title;
+            ViewBag.Title = blog.Title;
 
             return View(blog);
         }
@@ -98,6 +98,33 @@ namespace NewBlogger.Controllers
         public IActionResult Reply()
         {
 
+
+
+            if (String.IsNullOrEmpty(Request.Form["name"]))
+            {
+                throw new ArgumentNullException("name");
+            }
+
+            if (String.IsNullOrEmpty(Request.Form["email"]))
+            {
+                throw new ArgumentNullException("email");
+            }
+
+            if (String.IsNullOrEmpty(Request.Form["blogId"]))
+            {
+                throw new ArgumentNullException("blogId");
+            }
+
+            if (Guid.Parse(Request.Form["blogId"]) == Guid.Empty)
+            {
+                throw new ArgumentNullException("blogId");
+            }
+
+            if (String.IsNullOrEmpty(Request.Form["message"]))
+            {
+                throw new ArgumentNullException("message");
+            }
+
             var nickName = Request.Form["name"];
 
             var email = Request.Form["email"];
@@ -108,7 +135,7 @@ namespace NewBlogger.Controllers
 
             var message = Request.Form["message"];
 
-             _commentService.AddComment(nickName, email, blogId, message, replyId);
+            _commentService.AddComment(nickName, email, blogId, message, replyId);
 
             return Json(new { status = 1 });
         }
