@@ -146,6 +146,11 @@ namespace NewBlogger.Controllers
 
             var file = Request.Form.Files[0];
 
+            if (file==null)
+            {
+                throw new ArgumentNullException("file");
+            }
+
             var filePath = $@"{_hostingEnvironment.WebRootPath}\UploadImage\";
 
             if (!Directory.Exists(filePath))
