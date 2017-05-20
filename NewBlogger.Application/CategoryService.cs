@@ -20,6 +20,11 @@ namespace NewBlogger.Application
             _redisRepository = redisRepository;
         }
 
+
+        /// <summary>
+        /// 获取文章分类列表
+        /// </summary>
+        /// <returns></returns>
         public IList<CategoryDto> GetCategorys()
         {
             var categoryRedisKey = "NewBlogger:Categorys";
@@ -34,6 +39,10 @@ namespace NewBlogger.Application
             }).ToList();
         }
 
+        /// <summary>
+        /// 添加文章分类
+        /// </summary>
+        /// <param name="categoryName"></param>
         public void AddCategory(String categoryName)
         {
             if (String.IsNullOrEmpty(categoryName))
@@ -48,6 +57,10 @@ namespace NewBlogger.Application
             _redisRepository.ListRightPush(categoryRedisKey, category);
         }
 
+        /// <summary>
+        /// 移除文章分类
+        /// </summary>
+        /// <param name="categoryId"></param>
         public void RemoveCategory(Guid categoryId)
         {
             if (categoryId == Guid.Empty)
@@ -62,6 +75,11 @@ namespace NewBlogger.Application
             _redisRepository.ListRemove(categoryRedisKey, category);
         }
 
+        /// <summary>
+        /// 修改文章分类
+        /// </summary>
+        /// <param name="categoryId"></param>
+        /// <param name="newCategoryName"></param>
         public void ModifyCategory(Guid categoryId, String newCategoryName)
         {
             if (categoryId==Guid.Empty)
