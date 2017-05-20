@@ -325,11 +325,11 @@ body {
 }
 
 .slider {
-    margin-bottom: 5%;
+    /*margin-bottom: 5%;*/
 }
 /*--content--*/
 .main {
-    background: #fff;
+background: #fff;
 }
 
 /*.col_1_of_4:first-child {
@@ -352,7 +352,7 @@ body {
     -webkit-border-radius: 7px;
     -moz-border-radius: 7px;
     -o-border-radius: 7px;
-    position: relative;
+   /* position: relative;*/
 }
 
 .span_1_of_4 img {

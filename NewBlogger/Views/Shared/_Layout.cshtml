@@ -17,95 +17,94 @@
         a {
             text-decoration: none !important;
         }
+
+         html,body { height: 100%; padding: 0; margin: 0; }
+        .outer { height: 100%; }
+        .A { height: 400px; }
+        .B { height:auto;}
     </style>
 
 </head>
-<body style="height: 100%; overflow-y: scroll">
-    <div class="wrap">
-        <div class="header-top">
-            <div class="logo">
-                <a href="@Url.Action("Index","Home")"><img src="~/images/logo.png" alt="" /></a>
-            </div>
-            <div class="h_menu4">
-                <!-- start h_menu4 -->
-                <a class="toggleMenu" href="#">Menu</a>
-                <ul class="nav">
-                    <li class="active"><a href="@Url.Action("Index","Home")">Home</a></li>
+<body style="height:100%;">
+    <div class="outer" style="display:flex;flex-direction:column;">
+        <div class="wrap A" >
+            <div class="header-top">
+                <div class="logo">
+                    <a href="@Url.Action("Index","Home")"><img src="~/images/logo.png" alt="" /></a>
+                </div>
+                <div class="h_menu4">
+                    <!-- start h_menu4 -->
+                    <a class="toggleMenu" href="#">Menu</a>
+                    <ul class="nav">
+                        <li class="active"><a href="@Url.Action("Index","Home")">Home</a></li>
 
-                    <li>
-                        <a href="shortcodes.html">About Blog</a>
-                    </li>
-                    <li>
-                        <a href="blog.html">Support</a>
-                    </li>
-                    <li>
-                        <a href="contact.html">Contact Me</a>
-                    </li>
-                </ul>
-            </div><!-- end h_menu4 -->
-            <div class="clear"></div>
-        </div>
-        <div class="slider">
-            <div class="da-slider">
-                <div class="da-slide da-slide-current">
-                    <h1>@ViewBag.Title</h1>
+                        <li>
+                            <a href="shortcodes.html">About Blog</a>
+                        </li>
+                        <li>
+                            <a href="blog.html">Support</a>
+                        </li>
+                        <li>
+                            <a href="contact.html">Contact Me</a>
+                        </li>
+                    </ul>
+                </div><!-- end h_menu4 -->
+                <div class="clear"></div>
+            </div>
+            <div class="slider">
+                <div class="da-slider">
+                    <div class="da-slide da-slide-current">
+                        <h1>@ViewBag.Title</h1>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-
-    <div class="main" style="min-height: 2160px">
-        <div class="wrap" style="margin-bottom: 80px;">
-            <div class="col_1_of_4" style="width: 65%">
-                @RenderBody()
-            </div>
-            <div style="float: right; width: 30%; margin: 2% 0 1% 0">
-                <div class="float-lt">
-                    <div class="well">
-                        <h4>Blog Search</h4>
-                        <div class="input-group">
-                            <input class="form-control" type="text">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">
-                                    <span class="glyphicon glyphicon-search"></span>
-                                </button>
-                            </span>
+        <div class="main B" style="flex:1;">
+            <div class="wrap" style="margin-bottom: 80px;">
+                <div class="col_1_of_4" style="width: 65%">
+                    @RenderBody()
+                </div>
+                <div style="float: right; width: 30%; margin: 2% 0 1% 0">
+                    <div class="float-lt">
+                        <div class="well">
+                            <h4>Blog Search</h4>
+                            <div class="input-group">
+                                <input class="form-control" type="text">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button">
+                                        <span class="glyphicon glyphicon-search"></span>
+                                    </button>
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="well">
-                        <h4>Blog Categories</h4>
-                        <div class="row" id="categories">
+                        <div class="well">
+                            <h4>Blog Categories</h4>
+                            <div class="row" id="categories">
 
+                            </div>
+                            <!-- /.row -->
                         </div>
-                        <!-- /.row -->
-                    </div>
-                    <!-- Side Widget Well -->
-                    <div class="well">
-                        <h4>任何伟大的事迹都必定有它的起点，但惟有坚持到最后才能获得真正的荣耀</h4>
-                        <br />
                     </div>
                 </div>
+                <div class="clear"></div>
             </div>
-            <div class="clear"></div>
+        </div>
+        <div class="footer-bottom" style="">
+            <div class="wrap">
+                <div class="copy">
+                    <p>© 2017 Powered by<a href="javascript:void(0)" target="_blank"> ASP.NET Core on Linux</a></p>
+                </div>
+                <div class="social">
+                    <ul>
+                        <li class="facebook"><a href="#"><span> </span></a></li>
+                        <li class="linkedin"><a href="#"><span> </span></a></li>
+                        <li class="twitter"><a href="#"><span> </span></a></li>
+                    </ul>
+                </div>
+                <div class="clear"></div>
+            </div>
         </div>
     </div>
-    <div class="footer-bottom" style="position: fixed; bottom: 0; right: 0; left: 0;z-index:1000">
-        <div class="wrap">
-            <div class="copy">
-                <p>© 2017 Powered by<a href="javascript:void(0)" target="_blank"> ASP.NET Core on Linux</a></p>
-            </div>
-            <div class="social">
-                <ul>
-                    <li class="facebook"><a href="#"><span> </span></a></li>
-                    <li class="linkedin"><a href="#"><span> </span></a></li>
-                    <li class="twitter"><a href="#"><span> </span></a></li>
-                </ul>
-            </div>
-            <div class="clear"></div>
-        </div>
-    </div>
-
 </body>
 
 </html>
