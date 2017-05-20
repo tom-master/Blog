@@ -41,6 +41,11 @@ namespace NewBlogger.Application
         /// <param name="tagName"></param>
         public void AddTag(String tagName)
         {
+            if (String.IsNullOrEmpty(tagName))
+            {
+                throw new ArgumentNullException($"{tagName}");
+            }
+
             var tagRedisKey = "NewBlogger:Tags";
 
             _redisRepository.ListRightPush(tagRedisKey, new Tag(tagName));
@@ -52,6 +57,11 @@ namespace NewBlogger.Application
         /// <param name="tagId"></param>
         public void RemoveTag(Guid tagId)
         {
+            if (tagId==Guid.Empty)
+            {
+                throw new ArgumentNullException($"{tagId}");
+            }
+
             var categoryRedisKey = "NewBlogger:Tags";
 
             var category = _redisRepository.ListRange<Tag>(categoryRedisKey).FirstOrDefault(w => w.Id == tagId);
