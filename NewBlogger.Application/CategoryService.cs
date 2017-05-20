@@ -89,7 +89,7 @@ namespace NewBlogger.Application
 
             if (String.IsNullOrEmpty(newCategoryName))
             {
-                throw new ArgumentNullException($"{newCategoryName}")
+                throw new ArgumentNullException($"{newCategoryName}");
             }
 
             RemoveCategory(categoryId);
