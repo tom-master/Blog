@@ -18,7 +18,11 @@ namespace NewBlogger.Application
             _redisRepository = redisRepository;
         }
 
-
+        /// <summary>
+        /// 获取文章回复列表
+        /// </summary>
+        /// <param name="blogId"></param>
+        /// <returns></returns>
         public IList<CommentDto> GetComments(Guid blogId)
         {
             var commentBlogRedisKey = $"NewBlogger:Comments:BlogId:{blogId}";
@@ -34,6 +38,14 @@ namespace NewBlogger.Application
             }).ToList();
         }
 
+        /// <summary>
+        /// 添加文章回复
+        /// </summary>
+        /// <param name="nickName"></param>
+        /// <param name="emailAddress"></param>
+        /// <param name="blogId"></param>
+        /// <param name="content"></param>
+        /// <param name="replyId"></param>
         public void AddComment(String nickName, String emailAddress, Guid blogId, String content, Guid replyId = default(Guid))
         {
             var comment = new Comment(nickName, emailAddress, blogId, content, replyId);
