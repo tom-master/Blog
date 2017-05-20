@@ -25,6 +25,11 @@ namespace NewBlogger.Application
         /// <returns></returns>
         public IList<CommentDto> GetComments(Guid blogId)
         {
+            if (blogId==Guid.Empty)
+            {
+                throw new ArgumentNullException($"{blogId}");
+            }
+
             var commentBlogRedisKey = $"NewBlogger:Comments:BlogId:{blogId}";
 
             return _redisRepository.ListRange<Comment>(commentBlogRedisKey,0,-1).Select(comment => new CommentDto
@@ -48,6 +53,27 @@ namespace NewBlogger.Application
         /// <param name="replyId"></param>
         public void AddComment(String nickName, String emailAddress, Guid blogId, String content, Guid replyId = default(Guid))
         {
+            if (String.IsNullOrEmpty(nickName))
+            {
+                throw new ArgumentNullException($"{nickName}");
+            }
+
+            if (String.IsNullOrEmpty(emailAddress))
+            {
+                throw new ArgumentNullException($"{emailAddress}");
+            }
+
+            if (String.IsNullOrEmpty(content))
+            {
+                throw new ArgumentNullException($"{content}");
+            }
+
+            if (blogId==Guid.Empty)
+            {
+                throw new ArgumentNullException($"{blogId}");
+            }
+
+
             var comment = new Comment(nickName, emailAddress, blogId, content, replyId);
 
             var commentBlogRedisKey = $"NewBlogger:Comments:BlogId:{blogId}";
