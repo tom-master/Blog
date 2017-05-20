@@ -116,21 +116,21 @@
     <div class="float-lt col-lg-6">
         <ul class="list-unstyled">
             {{#each categories}}
-            <li>
-                <a href="@Url.Action("Index","Home")?categoryId={{id}}">{{name}}&nbsp;({{blogCount}})</a>
-            </li>
+                <li>
+                    <a href="@Url.Action("Index","Home")?categoryId={{id}}">{{name}}&nbsp;({{blogCount}})</a>
+                </li>
             {{/each}}
         </ul>
     </div>
 
 </script>
 <script>
-$(function() {
-                    $.get('@Url.Action("GetCategories", "Home")', function (responseText) {
-                        var tableTemplate = Handlebars.compile($("#categories-template").html());
-                        $('#categories').html(tableTemplate(responseText));
-                     });
-})
+    $(function() {
+        $.get('@Url.Action("GetCategories", "Home")', function (responseText) {
+            var tableTemplate = Handlebars.compile($("#categories-template").html());
+            $('#categories').html(tableTemplate(responseText));
+        });
+    })
 </script>
 
 @RenderSection("scripts", required: false)
