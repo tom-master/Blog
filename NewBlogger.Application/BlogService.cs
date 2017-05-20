@@ -26,15 +26,17 @@ namespace NewBlogger.Application
 
         public IList<BlogDto> GetBlogs(Guid categoryId, Int32 pageIndex, Int32 pageSize, out Int32 totalCount)
         {
-            Int32 internalStart = (pageIndex - 1) * pageSize, internalEnd = (pageSize + internalStart) - 1;
+            //Int32 internalStart = (pageIndex - 1) * pageSize, internalEnd = (pageSize + internalStart) - 1;
 
             var blogIdsRedisKey = $"NewBlogger:BlogIds:Id";
 
-            var blogIds = _redisRepository.ListRange<Guid>(blogIdsRedisKey, internalStart, internalEnd);
+            var blogIds = _redisRepository.ListRange<Guid>(blogIdsRedisKey, 0, -1);
 
-            totalCount = (Int32)_redisRepository.ListLength(blogIdsRedisKey);
+            var blogs = blogIds.Select(GetBlog).Where(w => categoryId == Guid.Empty || w.CategoryId == categoryId);
 
-            return blogIds.Select(GetBlog).Where(w=>categoryId==Guid.Empty?true:w.CategoryId==categoryId).ToList();
+            totalCount = blogs.Count();
+
+            return blogs.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
 
         }
 
@@ -67,8 +69,6 @@ namespace NewBlogger.Application
 
             _redisRepository.HashIncrement(blogRedisKey, "ViewCount");
         }
-
-
 
         private IList<TagDto> GetBlogTag(params Guid[] tagIds)
         {
@@ -114,9 +114,9 @@ namespace NewBlogger.Application
 
             var categoryBlogCountRedisKey = $"NewBlogger:CategoryBlogCount:Category:{categoryId}";
 
-            if(!_redisRepository.KeyExists(categoryBlogCountRedisKey))
+            if (!_redisRepository.KeyExists(categoryBlogCountRedisKey))
             {
-                _redisRepository.StringSet(categoryBlogCountRedisKey,1);
+                _redisRepository.StringSet(categoryBlogCountRedisKey, 1);
             }
             else
             {
