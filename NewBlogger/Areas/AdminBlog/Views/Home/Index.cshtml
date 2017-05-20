@@ -3,6 +3,8 @@
     var tags = ViewData["Tags"] as IList<TagDto>;
 
     var categorys = ViewData["Categorys"] as IList<CategoryDto>;
+
+    Layout=null;
 }
 
 <html>
@@ -13,8 +15,8 @@
                 float:left
             }
        </style>
+       <link href="@Url.Content("~/lib/wangEditor/dist/css/wangEditor.css")" rel="stylesheet" />
     </head>
-
     <body style="width:100%">
         <div id="tags" class="divfloat" style="border-color:royalblue;border-style:dashed;width:25%">
             <div style="margin-top:10px;margin-left:10px">
@@ -83,7 +85,6 @@
         <div style="border-color:red;border-style:dashed;clear:both;width:50%;">
            <div style="margin-top:10px;margin-left:10px;">
                 <i>标题：</i><input type="text" value="" id="title" /><br/>
-                <i>内容：</i><input type="text" value="" id="content" /><br/>
                 <i>目录Id：</i>
                     <select id="categoryselect" onchange="javascript:GetBlogs()">
                         @if(categorys.Any())
@@ -112,6 +113,10 @@
                         }
                     </select>
                 <br/>
+                    <div style=" margin-top:10px; margin-right:10px;">
+                        <textarea  id="content" name="content" rows="15" cols="50" style="max-height:500px;" nullmsg="回复不能为空"></textarea>
+                    </div>
+                <br/>
                 <button type="button" id="addBlog" onclick="addBlog();">添加文章</button>
            </div>
             
@@ -133,7 +138,9 @@
     </body>
 </html>
 <script src="@Url.Content("~/js/jquery.min.js")"></script>
+<script src="@Url.Content("~/lib/wangEditor/dist/js/wangEditor.js")"></script>
 <script src="@Url.Content("~/js/handlebars-v4.0.5.js")"></script>
+
 <script id="blogs-template" type="text/x-handlebars-template">
     {{#if blogs}}
         {{#each blogs}}
@@ -161,6 +168,9 @@
 <script>
     $(function(){
 
+        //初始化编辑器
+        InitEditor();
+
         //获取博客列表
         GetBlogs();
 
@@ -182,6 +192,7 @@
 
         //添加类别
         $('#addBlog').on('click',function(){
+            
             var title = $('#title').val();
 
             var content = $('#content').val();
@@ -225,5 +236,40 @@
     //删除文章
     function removeBlog(blogId){
         
+    }
+
+    function InitEditor() {
+        
+        var editor = new wangEditor('content');
+
+        // 普通的自定义菜单
+        editor.config.menus = [
+            'source',
+            '|',
+            'bold',
+            'underline',
+            'italic',
+            'eraser',
+            'forecolor',
+            '|',
+            'fontfamily',
+            'fontsize',
+            '|',
+            'emotion',
+            '|',
+            'img',
+            'insertcode',
+            '|',
+            'undo',
+            'redo'
+        ];
+
+        editor.config.uploadImgUrl = '@Url.Action("UploadImage","Home",new{area=""})';
+
+        editor.config.hideLinkImg = true;
+
+        editor.create();
+
+        window.editor = editor;
     }
 </script>

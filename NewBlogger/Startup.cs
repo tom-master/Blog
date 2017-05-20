@@ -63,10 +63,10 @@ namespace NewBlogger
             app.UseMvc(routes =>
             {
                 //注册area路由
-                routes.MapRoute("areaRoute","{area:exists}/{controller}/{action=Index}/{id?}");
+                routes.MapRoute("areaRoute","{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
                 //注册普通路由
-                routes.MapRoute(name: "default",template: "{controller=Home}/{action=Index}/{id?}");
+                routes.MapRoute("default","{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
