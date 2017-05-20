@@ -36,6 +36,8 @@ namespace NewBlogger.Application
 
             totalCount = blogs.Count();
 
+            var a1 = 1;
+
             return blogs.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
 
         }
