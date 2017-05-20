@@ -28,7 +28,7 @@ namespace NewBlogger.Application
 
             return _redisRepository.ListRange<Category>(categoryRedisKey).Select(s => new CategoryDto
             {
-                BlogCount = !String.IsNullOrEmpty(_redisRepository.StringGet(categoryBlogCountRedisKey + s.Id))?Int32.Parse(_redisRepository.StringGet(categoryBlogCountRedisKey + s.Id)):0,
+                BlogCount = !String.IsNullOrEmpty(_redisRepository.StringGet(categoryBlogCountRedisKey + s.Id)) ? Int32.Parse(_redisRepository.StringGet(categoryBlogCountRedisKey + s.Id)) : 0,
                 Id = s.Id,
                 Name = s.Name
             }).ToList();
@@ -36,6 +36,11 @@ namespace NewBlogger.Application
 
         public void AddCategory(String categoryName)
         {
+            if (String.IsNullOrEmpty(categoryName))
+            {
+                throw new ArgumentNullException($"{nameof(categoryName)}");
+            }
+
             var category = new Category(categoryName);
 
             var categoryRedisKey = "NewBlogger:Categorys";
@@ -45,6 +50,11 @@ namespace NewBlogger.Application
 
         public void RemoveCategory(Guid categoryId)
         {
+            if (categoryId == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{nameof(categoryId)}");
+            }
+
             var categoryRedisKey = "NewBlogger:Categorys";
 
             var category = _redisRepository.ListRange<Category>(categoryRedisKey).FirstOrDefault(w => w.Id == categoryId);
@@ -54,9 +64,19 @@ namespace NewBlogger.Application
 
         public void ModifyCategory(Guid categoryId, String newCategoryName)
         {
-             RemoveCategory(categoryId);
+            if (categoryId==Guid.Empty)
+            {
+                throw new ArgumentNullException($"{categoryId}");
+            }
 
-             AddCategory(newCategoryName);
+            if (String.IsNullOrEmpty(newCategoryName))
+            {
+                throw new ArgumentNullException($"{newCategoryName}")
+            }
+
+            RemoveCategory(categoryId);
+
+            AddCategory(newCategoryName);
         }
     }
 }
