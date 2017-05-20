@@ -24,6 +24,14 @@ namespace NewBlogger.Application
             _commentService = commentService;
         }
 
+        /// <summary>
+        /// 获取文章列表
+        /// </summary>
+        /// <param name="categoryId"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="totalCount"></param>
+        /// <returns></returns>
         public IList<BlogDto> GetBlogs(Guid categoryId, Int32 pageIndex, Int32 pageSize, out Int32 totalCount)
         {
             //Int32 internalStart = (pageIndex - 1) * pageSize, internalEnd = (pageSize + internalStart) - 1;
@@ -40,8 +48,19 @@ namespace NewBlogger.Application
 
         }
 
+        /// <summary>
+        /// 获取文章
+        /// </summary>
+        /// <param name="blogId"></param>
+        /// <returns></returns>
         public BlogDto GetBlog(Guid blogId)
         {
+
+            if (blogId == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{nameof(blogId)}");
+            }
+
             var blogRedisKey = $"NewBlogger:Blogs:Id:{blogId}";
 
             var blog = _redisRepository.HashGet<Blog>(blogRedisKey).FirstOrDefault();
@@ -63,16 +82,31 @@ namespace NewBlogger.Application
             };
         }
 
+        /// <summary>
+        /// 添加文章访问量
+        /// </summary>
+        /// <param name="blogId"></param>
         public void AddViewCount(Guid blogId)
         {
+            if (blogId == Guid.Empty)
+            {
+                throw new ArgumentNullException($"{nameof(blogId)}");
+            }
+
             var blogRedisKey = $"NewBlogger:Blogs:Id:{blogId}";
 
             _redisRepository.HashIncrement(blogRedisKey, "ViewCount");
         }
 
+
+        /// <summary>
+        /// 获取文章标签
+        /// </summary>
+        /// <param name="tagIds"></param>
+        /// <returns></returns>
         private IList<TagDto> GetBlogTag(params Guid[] tagIds)
         {
-            if (tagIds == null)
+            if (!tagIds.Any())
             {
                 return new List<TagDto>();
             }
@@ -90,8 +124,35 @@ namespace NewBlogger.Application
                 }).ToList() : new List<TagDto>();
         }
 
+        /// <summary>
+        /// 新增文章
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="content"></param>
+        /// <param name="categoryId"></param>
+        /// <param name="tagIds"></param>
         public void AddNewBlog(String title, String content, Guid categoryId, params Guid[] tagIds)
         {
+            if (String.IsNullOrEmpty(title))
+            {
+                throw new ArgumentNullException($"{nameof(title)}");
+            }
+
+            if (String.IsNullOrEmpty(content))
+            {
+                throw new ArgumentNullException($"{nameof(content)}");
+            }
+
+            if (categoryId==Guid.Empty)
+            {
+                throw new ArgumentNullException($"{nameof(categoryId)}");
+            }
+
+            if (!tagIds.Any())
+            {
+                throw new ArgumentNullException($"{nameof(tagIds)}");
+            }
+
             var blog = new Blog(title, content, categoryId, tagIds);
 
             var blogRedisKey = $"NewBlogger:Blogs:Id:{blog.Id}";
