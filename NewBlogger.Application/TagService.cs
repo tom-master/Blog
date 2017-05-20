@@ -19,6 +19,10 @@ namespace NewBlogger.Application
             _redisRepository = redisRepository;
         }
 
+        /// <summary>
+        /// 获取文章标签列表
+        /// </summary>
+        /// <returns></returns>
         public IList<TagDto> GetTags()
         {
             var tagRedisKey = "NewBlogger:Tags";
@@ -31,6 +35,10 @@ namespace NewBlogger.Application
             }).ToList();
         }
 
+        /// <summary>
+        /// 新增文章标签
+        /// </summary>
+        /// <param name="tagName"></param>
         public void AddTag(String tagName)
         {
             var tagRedisKey = "NewBlogger:Tags";
@@ -38,7 +46,10 @@ namespace NewBlogger.Application
             _redisRepository.ListRightPush(tagRedisKey, new Tag(tagName));
         }
 
-
+        /// <summary>
+        /// 移除文章列表
+        /// </summary>
+        /// <param name="tagId"></param>
         public void RemoveTag(Guid tagId)
         {
             var categoryRedisKey = "NewBlogger:Tags";

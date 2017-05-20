@@ -73,7 +73,6 @@ namespace NewBlogger.Application
                 throw new ArgumentNullException($"{blogId}");
             }
 
-
             var comment = new Comment(nickName, emailAddress, blogId, content, replyId);
 
             var commentBlogRedisKey = $"NewBlogger:Comments:BlogId:{blogId}";
