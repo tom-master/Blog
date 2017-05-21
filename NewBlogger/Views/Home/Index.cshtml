@@ -1,7 +1,7 @@
 ﻿<div id="blogs">
 
 </div>
-<div class="pagination pagination-centered" id="pagination"></div>
+<div class="pagination pagination-centered" style="margin-top:20px" id="pagination"></div>
 <input id="pagination_setting" type="hidden" per="15">
 <input id="categoryId" value="@(Context.Request.Query["categoryId"].FirstOrDefault()==null?Guid.Empty.ToString():Context.Request.Query["categoryId"].FirstOrDefault())" type="hidden">
 @section scripts{
