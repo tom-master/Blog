@@ -38,28 +38,38 @@
             </span>
         </h2>
         <div class="clr"></div>
-        @{
-            foreach (var comment in Model.Comments)
-            {
-                <text>
-                <div class="well">
-                    <div class="comment">
-                        <span class="comment_actions">
-                            <a href="javascript:void(0);" onclick="setCommentId('@comment.Id','@comment.ReplyNickName')">回复</a>
-                        </span>
-                        <a href="javascript:void(0)"><img src="~/images/userpic.gif" width="40" height="40" alt="" class="userpic"></a>
-                        <p>
-                            <a href="javascript:void(0);">@comment.ReplyNickName</a> 说:<br>
-                             
-                                @Html.Raw(System.Net.WebUtility.HtmlDecode(comment.Content))
-                            
-                           提交于：@comment.AddTime.ToString("yyyy-MM-dd HH:mm:ss")
-                        </p>
+            @{
+
+                if(!Model.Comments.Any())
+                {
+                    <div style="text-align:center">
+                        <font size="4">暂无评论</font>
                     </div>
-                </div>
-                </text>
+                }
+                else
+                {
+                    foreach (var comment in Model.Comments)
+                    {
+                        <text>
+                            <div class="well">
+                                <div class="comment">
+                                    <span class="comment_actions">
+                                        <a href="javascript:void(0);" onclick="setCommentId('@comment.Id','@comment.ReplyNickName')">回复</a>
+                                    </span>
+                                    <a href="javascript:void(0)"><img src="~/images/userpic.gif" width="40" height="40" alt="" class="userpic"></a>
+                                    <p>
+                                        <a href="javascript:void(0);">@comment.ReplyNickName</a> 说:<br>
+                                        
+                                            @Html.Raw(System.Net.WebUtility.HtmlDecode(comment.Content))
+                                        
+                                    提交于：@comment.AddTime.ToString("yyyy-MM-dd HH:mm:ss")
+                                    </p>
+                                </div>
+                            </div>
+                        </text>
+                    }
+                }
             }
-        }
     </div>
     <div>
         <h2 style="background: url(/images/h2_bgm.gif) no-repeat left center">
