@@ -123,7 +123,7 @@ body {
 
 .header-top {
     padding: 7% 0 0% 0%;
-    background: url(../images/border.png) repeat-x 0px 163px;
+   /* background: url(../images/border.png) repeat-x 0px 163px;*/
 }
 
 .pages-top {
