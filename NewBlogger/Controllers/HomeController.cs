@@ -64,7 +64,16 @@ namespace NewBlogger.Controllers
 
                 return View(blog);
             }
-
+            
+            /// <summary>
+            /// 关于博客
+            /// </summary>
+            /// <returns></returns>
+            [HttpGet]
+            public IActionResult AboutBlog()
+            {
+                return View();
+            }
 
         #endregion
 
