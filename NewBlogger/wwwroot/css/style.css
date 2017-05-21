@@ -1208,7 +1208,28 @@ ul.blog-list li {
 .project-list1 {
     padding-top: 10%;
 }
-
+ .submit-comment {
+    margin-top: 10px;
+	color: #FFF;
+	font-family: 'Lato', sans-serif;
+	font-size: 1.1em;
+	font-weight: normal;
+	padding: 15px 30px;
+	text-transform: uppercase;
+	background:#FFA540;
+	display: inline-block;
+	-webkit-transition: all 0.3s ease-out;
+	-moz-transition: all 0.3s ease-out;
+	-ms-transition: all 0.3s ease-out;
+	-o-transition: all 0.3s ease-out;
+	transition: all 0.3s ease-out;
+	font-weight:100;
+	border:none;
+	cursor:pointer;
+}
+ .submit-comment:hover {
+	background:#555;
+}
 .project-list2 {
     padding-top: 10%;
 }
