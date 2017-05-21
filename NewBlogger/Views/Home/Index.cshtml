@@ -3,8 +3,10 @@
 </div>
 <div class="pagination pagination-centered" id="pagination"></div>
 <input id="pagination_setting" type="hidden" per="15">
+<input id="categoryId" value="@(Context.Request.Query["categoryId"].FirstOrDefault()==null?Guid.Empty.ToString():Context.Request.Query["categoryId"].FirstOrDefault())" type="hidden">
 @section scripts{
     <script src="@Url.Content("~/js/pager.js")"></script>
+    <script src="@Url.Content("~/js/Home/Index.js")"></script>
 
     <script id="blogs-template" type="text/x-handlebars-template">
         {{#each blogs}}
@@ -32,44 +34,5 @@
         {{/each}}
     </script>
 
-    <script>
-        $(function () {
-            getBlog(0);
-        });
-       
-
-        function getBlog(current_page) {
-            $.get('@Url.Action("GetBlogs", "Home")',
-            {
-                pageIndex: current_page === 0 ? 1 : current_page + 1,
-                pageSize: 5,
-                categoryId: '@(Context.Request.Query["categoryId"].FirstOrDefault()==null?Guid.Empty.ToString():Context.Request.Query["categoryId"].FirstOrDefault())'
-            }, function (responseText) {
-                var tableTemplate = Handlebars.compile($("#blogs-template").html());
-
-                Handlebars.registerHelper('ReplaceText',function(dateTime){
-                    return dateTime.replace(/T/,' ');
-                })
-
-                $('#blogs').html(tableTemplate(responseText));
-                $('#pagination_setting').attr('count', responseText.totalCount);
-                initPagination(current_page);
-            });
-        }
-
-
-        function initPagination(current_page) {
-            $('#pagination').pagination(parseInt($('#pagination_setting').attr('count')), {
-                current_page: current_page,
-                items_per_page: 5,
-                num_display_entries: 3,
-                num_edge_entries: 1,
-                callback: getBlog,
-                prev_text: '上一页',
-                next_text: '下一页'
-            });
-        }
-
-
-    </script>
+    
 }
