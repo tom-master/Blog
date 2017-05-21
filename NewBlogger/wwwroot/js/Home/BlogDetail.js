@@ -18,11 +18,12 @@ function InitValidForm() {
                 return true;
             },
             'email': function (value) {
+                debugger
                 if (value.length <= 0) {
                     return false;
                 }
 
-                var szReg = /^([a-zA-Z0-9_\.\-])+\@@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                var szReg = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/;
 
                 if (szReg.test(value)) {
                     return true;
