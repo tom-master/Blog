@@ -72,6 +72,8 @@ namespace NewBlogger.Controllers
             [HttpGet]
             public IActionResult AboutBlog()
             {
+                ViewBag.Title="关于博客";
+
                 return View();
             }
 
@@ -82,6 +84,8 @@ namespace NewBlogger.Controllers
             [HttpGet]
             public IActionResult ContactMe()
             {
+                ViewBag.Title="联系我";
+
                 return View();                
             }
 
