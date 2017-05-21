@@ -16,24 +16,26 @@
             </span>
         </h2>
         <div class="clr"></div>
-        <p>Posted by <a href="#">Owner</a> </p>
+        <p>作者: <a href="#">Owner</a> </p>
         <p>@Html.Raw(System.Net.WebUtility.HtmlDecode(Model.Content))</p>
         <p>
-            Tagged:
+            文章标签:
             @{
                 foreach (var tag in Model.Tags)
                 {
-                    <a href="javascript:void(0)">@tag.Name</a>
+                    <text>
+                        <a href="javascript:void(0)">@tag.Name</a>&nbsp
+                    </text>
                 }
             }
 
         </p>
-        <p><a href="javascript:void(0)"><strong>Comments (@Model.Comments.Count)</strong></a> <span>&nbsp;•&nbsp;</span> @Model.AddTime <span>&nbsp;•&nbsp;</span> </p>
+        <p><a href="javascript:void(0)"><strong>回复数 (@Model.Comments.Count)</strong></a> <span>&nbsp;•&nbsp;</span> @Model.AddTime.ToString("yyyy-MM-dd HH:mm:ss") <span>&nbsp;•&nbsp;</span> </p>
     </div>
     <div class="article">
         <h2 style="background: url(/images/h2_bgm.gif) no-repeat left center">
             <span>
-                &nbsp;&nbsp;  <font size="5"><font color="#00b3ea">@(Model.Comments.Count)</font> Responses</font>
+                &nbsp;&nbsp;  <font size="5">评论列表</font>
             </span>
         </h2>
         <div class="clr"></div>
@@ -48,11 +50,11 @@
                         </span>
                         <a href="javascript:void(0)"><img src="~/images/userpic.gif" width="40" height="40" alt="" class="userpic"></a>
                         <p>
-                            <a href="javascript:void(0);">@comment.ReplyNickName</a> Says:<br>
+                            <a href="javascript:void(0);">@comment.ReplyNickName</a> 说:<br>
                              
                                 @Html.Raw(System.Net.WebUtility.HtmlDecode(comment.Content))
                             
-                            @comment.AddTime.ToString("yyyy-MM-dd HH:mm:ss")
+                           提交于：@comment.AddTime.ToString("yyyy-MM-dd HH:mm:ss")
                         </p>
                     </div>
                 </div>
@@ -63,7 +65,7 @@
     <div>
         <h2 style="background: url(/images/h2_bgm.gif) no-repeat left center">
             <span>
-                &nbsp;&nbsp;  <font size="5"><font color="#00b3ea">Leave a</font> Reply</font>
+                &nbsp;&nbsp;  <font size="5">发表评论</font>
             </span>
         </h2>
         <div class="clr"></div>
@@ -72,17 +74,17 @@
             <input type="hidden" id="replyId" name="replyId" value="" />
             <ol>
                 <li>
-                    <label for="name">Name (required)</label>
+                    <label for="name">昵称 (必填)</label>
                     <input type="text" datatype="name" id="name" name="name" class="text" nullmsg="昵称不能为空">
                     <span class="Validform_checktip"></span>
                 </li>
                 <li>
-                    <label for="email">Email Address (required)</label>
+                    <label for="email"> 邮箱 (必填)</label>
                     <input type="text" datatype="email" id="email" name="email" class="text" nullmsg="邮箱不能为空">
                     <span class="Validform_checktip"></span>
                 </li>
                 <li>
-                    <label for="message">Your Message (required)</label>
+                    <label for="message">回复内容(必填)</label>
                     <textarea datatype="message" id="message" name="message" rows="15" cols="50" style="max-height:500px;" nullmsg="回复不能为空"></textarea>
                     <span class="Validform_checktip"></span>
                 </li>

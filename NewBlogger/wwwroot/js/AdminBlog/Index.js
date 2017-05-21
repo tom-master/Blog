@@ -9,6 +9,7 @@ $(function(){
     //添加标签
     $('#addTag').on('click',function(){
         var tagName= $('#tagName').val();
+
         $.post('/AdminBlog/Home/AddTag',{tagName:tagName},function(){
             location.reload();
         })
@@ -17,6 +18,7 @@ $(function(){
     //添加类别
     $('#addCategory').on('click',function(){
         var categoryName = $('#categoryName').val();
+
         $.post('/AdminBlog/Home/AddCategory',{categoryName:categoryName},function(){
             location.reload();
         })
@@ -24,13 +26,9 @@ $(function(){
 
     //添加类别
     $('#addBlog').on('click',function(){
-        
         var title = $('#title').val();
-
         var content = $('#content').val();
-
         var categoryId =  $('#categoryselect').find('option:selected').attr('data-categoryid');
-
         var tagId = $('#tagselect').find('option:selected').attr('data-tagid');
 
         $.post('/AdminBlog/Home/AddBlog', { title:title, content:content, categoryId:categoryId,tagId:tagId }, function(responseText) {
@@ -97,9 +95,7 @@ function InitEditor() {
     ];
 
     editor.config.uploadImgUrl = '/Home/UploadImage';
-
     editor.config.hideLinkImg = true;
-
     editor.create();
 
     window.editor = editor;

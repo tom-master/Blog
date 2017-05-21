@@ -31,7 +31,6 @@ var adjustMenu = function() {
 		}
 		$(".nav li").unbind('mouseenter mouseleave');
 		$(".nav li a.parent").unbind('click').bind('click', function(e) {
-			// must be attached to anchor element to prevent bubbling
 			e.preventDefault();
 			$(this).parent("li").toggleClass("hover");
 		});
@@ -42,8 +41,8 @@ var adjustMenu = function() {
 		$(".nav li").removeClass("hover");
 		$(".nav li a").unbind('click');
 		$(".nav li").unbind('mouseenter mouseleave').bind('mouseenter mouseleave', function() {
-		 	// must be attached to li so that mouseleave is not triggered when hover over submenu
-		 	$(this).toggleClass('hover');
+			$(".nav li").removeClass("active");
+		 	$(this).toggleClass('active');
 		});
 	}
 }

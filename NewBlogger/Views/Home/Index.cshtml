@@ -19,14 +19,14 @@
                 </a>
             </h2>
             <p>
-                Posted by <a href="javascript:void(0)">Owner</a>
+                作者： <a href="javascript:void(0)">Owner</a>
             </p>
             <div id="box">
                {{{content}}}
             </div>
             <p class="spec">
-                <a class="rm" href="@Url.Action("BlogDetail", "Home")?blogId={{id}}">Read more</a> &nbsp;•&nbsp;
-                <a class="com" href="@Url.Action("BlogDetail", "Home")?blogId={{id}}">Comments ({{commentCount}})</a> &nbsp;•&nbsp;
+                <a class="rm" href="@Url.Action("BlogDetail", "Home")?blogId={{id}}">阅读全文</a> &nbsp;•&nbsp;
+                <a class="com" href="@Url.Action("BlogDetail", "Home")?blogId={{id}}">回复数 ({{commentCount}})</a> &nbsp;•&nbsp;
                 <span class="date">{{ReplaceText addTime}}</span>
             </p>
         </div>
