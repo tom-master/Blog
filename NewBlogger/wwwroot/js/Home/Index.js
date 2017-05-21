@@ -1,4 +1,5 @@
 $(function () {
+    $('#index').addClass('active');
     getBlog(0);
 });
 
