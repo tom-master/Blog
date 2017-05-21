@@ -9,7 +9,7 @@ $(function(){
     //添加标签
     $('#addTag').on('click',function(){
         var tagName= $('#tagName').val();
-        $.post('@Url.Action("AddTag","Home")',{tagName:tagName},function(){
+        $.post('/AdminBlog/Home/AddTag',{tagName:tagName},function(){
             location.reload();
         })
     });
@@ -17,7 +17,7 @@ $(function(){
     //添加类别
     $('#addCategory').on('click',function(){
         var categoryName = $('#categoryName').val();
-        $.post('@Url.Action("AddCategory","Home")',{categoryName:categoryName},function(){
+        $.post('/AdminBlog/Home/AddCategory',{categoryName:categoryName},function(){
             location.reload();
         })
     });
@@ -33,7 +33,7 @@ $(function(){
 
         var tagId = $('#tagselect').find('option:selected').attr('data-tagid');
 
-        $.post('@Url.Action("AddBlog","Home")', { title:title, content:content, categoryId:categoryId,tagId:tagId }, function(responseText) {
+        $.post('/AdminBlog/Home/AddBlog', { title:title, content:content, categoryId:categoryId,tagId:tagId }, function(responseText) {
                 location.reload();
         });            
     })
@@ -41,7 +41,7 @@ $(function(){
 
 
 function GetBlogs(){
-    $.get('@Url.Action("GetBlogs","Home")',
+    $.get('/AdminBlog/Home/GetBlogs',
     {
         pageIndex:1,
         pageSize:10
@@ -53,14 +53,14 @@ function GetBlogs(){
 
 //删除标签
 function removeTag(tagId){
-    $.post('@Url.Action("RemoveTag","Home")',{tagId:tagId},function(responseText){
+    $.post('/AdminBlog/Home/RemoveTag',{tagId:tagId},function(responseText){
         location.reload();
     })
 }
 
 //删除类别
 function removeCategory(categoryId){
-    $.post('@Url.Action("RemoveCategory","Home")',{categoryId:categoryId},function(responseText){
+    $.post('/AdminBlog/Home/RemoveCategory',{categoryId:categoryId},function(responseText){
         location.reload();
     })
 }
@@ -96,7 +96,7 @@ function InitEditor() {
         'redo'
     ];
 
-    editor.config.uploadImgUrl = '@Url.Action("UploadImage","Home",new{area=""})';
+    editor.config.uploadImgUrl = '/Home/UploadImage';
 
     editor.config.hideLinkImg = true;
 
