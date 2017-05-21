@@ -75,6 +75,16 @@ namespace NewBlogger.Controllers
                 return View();
             }
 
+            /// <summary>
+            /// 联系我
+            /// </summary>
+            /// <returns></returns>
+            [HttpGet]
+            public IActionResult ContactMe()
+            {
+                return View();                
+            }
+
         #endregion
 
         #region 获取
