@@ -1,4 +1,7 @@
 $(function () {
+    debugger
+    $('#index').addClass('active');
+    
     InitValidForm();
 
     InitEditor();

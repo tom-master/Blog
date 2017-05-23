@@ -37,7 +37,7 @@ namespace NewBlogger.Controllers
             [HttpGet]
             public IActionResult Index()
             {
-                ViewBag.Title = "初代目黑影";
+                ViewBag.Title = "Sic Parvis Magna";
 
                 return View();
             }

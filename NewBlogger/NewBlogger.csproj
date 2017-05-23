@@ -60,5 +60,7 @@
   <ItemGroup>
     <Content Include="Controllers\HomeController.cs" />
     <Content Include="Views\Home\AboutBlog.cshtml" />
+    <Content Include="wwwroot\js\Home\BlogDetail.js" />
+    <Content Include="wwwroot\js\Home\Index.js" />
   </ItemGroup>
 </Project>
