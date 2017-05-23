@@ -1,5 +1,5 @@
 $(function () {
-    debugger
+    
     $('#index').addClass('active');
     
     InitValidForm();
@@ -21,7 +21,7 @@ function InitValidForm() {
                 return true;
             },
             'email': function (value) {
-                debugger
+                
                 if (value.length <= 0) {
                     return false;
                 }
