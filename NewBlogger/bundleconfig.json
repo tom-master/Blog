@@ -17,7 +17,7 @@
     "minify": {
       "enabled": true,
       "renameLocals": true
-    },
+    },    
     // Optinally generate .map file
     "sourceMap": false
   }
